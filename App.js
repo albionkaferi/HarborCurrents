@@ -1,21 +1,15 @@
+// react
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView from 'react-native-maps';
+import { useState, useEffect } from 'react';
+import { StyleSheet, Image } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+// data
+import data from './data/data.json';
+// scripts
+import MapDisplay from './components/MapDisplay.js'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <MapView style={styles.map} />
-      <StatusBar style="auto" />
-    </View>
+    <MapDisplay data={data}/>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
