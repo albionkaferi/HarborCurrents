@@ -12,12 +12,12 @@ const initialRegion = {
     "longitudeDelta": 0.12868797758112294
 };
 
-function dataToMarker(dataPoint) {
+function dataToMarker(dataPoint, index) {
     return (
         <Marker
             coordinate={dataPoint.point}
             anchor={(0,0.5)}
-            key={`${dataPoint.point.latitude}_${dataPoint.point.longitude}`}
+            key={index}
             tracksViewChanges={false}
         >
             <Image
@@ -39,7 +39,6 @@ function dataToMarker(dataPoint) {
 
 function MapDisplay(props) {
     function updateData(region) {
-        console.log(region);
         const out = Math.floor(200 * (region.latitudeDelta - 0.08414570425311751) + 20);
         setMapData(filterRange(averageData(props.data, out), region));
     }
