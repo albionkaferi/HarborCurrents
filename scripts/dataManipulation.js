@@ -1,6 +1,5 @@
 // Convert data into usable format
 
-
 // get average value of an input array, if empty array then default to -999
 function arrayAverage(array, def=-999.0) {
     const sum = array.reduce((acc, currVal) => acc + currVal, 0);
@@ -65,4 +64,27 @@ export function averageData(idata, average) {
     }
 
     return filterPoints(out_data.flat()).map(arrayToMap);
+}
+
+export function slimData(idata, average) {
+    const nth_element = (element, index) => index % average === 0;
+    let out_data = idata.filter(nth_element).map((arr) => arr.filter(nth_element));
+
+    return filterPoints(out_data.flat()).map(arrayToMap);
+}
+
+export function slimData2(idata, average, region) {
+    const nth_element = (element, index) => index % average === 0;
+    let out_data = idata.filter(nth_element).map((arr) => arr.filter(nth_element));
+
+    return filterRange(filterPoints(out_data.flat()), region).map(arrayToMap);
+}
+
+export function filterRange(idata, region) {
+    function inRange(point) {
+        const lat_range = (point.point.latitude > region.latitude - region.latitudeDelta) && (point.point.latitude < region.latitude + region.latitudeDelta);
+        const lon_range = (point.point.longitude > region.longitude - region.longitudeDelta) && (point.point.longitude < region.longitude + region.longitudeDelta);
+        return lat_range && lon_range;
+    }
+    return idata.filter(inRange);
 }
