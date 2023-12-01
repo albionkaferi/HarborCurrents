@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default function SettingsScreen({ logout }) {
+export default function SettingsScreen({ AuthContext }) {
+  const { signOut } = useContext(AuthContext);
   const [date, setDate] = useState(new Date());
 
   const minDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -40,7 +41,7 @@ export default function SettingsScreen({ logout }) {
           />
         </View>
       </View>
-      <Button title="Log Out" onPress={logout} />
+      <Button title="Log Out" onPress={signOut} />
     </View>
   );
 }
