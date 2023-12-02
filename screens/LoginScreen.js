@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Button, TextInput, Text, StyleSheet } from "react-native";
+import { View, TextInput, Text, Pressable, StyleSheet } from "react-native";
 
 export default function LoginScreen({ AuthContext }) {
   const [username, setUsername] = useState("");
@@ -10,25 +10,31 @@ export default function LoginScreen({ AuthContext }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.error}>{error}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button
-        style={styles.btn}
-        title="Sign in"
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </View>
+      <Pressable
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? "#7dd3fc" : "#0ea5e9" },
+          styles.btn,
+        ]}
         onPress={() => signIn({ username, password }, setError)}
-      />
+      >
+        <Text style={styles.btnText}>Sign in</Text>
+      </Pressable>
+      <Text style={styles.error}>{error}</Text>
     </View>
   );
 }
@@ -38,17 +44,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+  },
+  inputContainer: {
+    width: "80%",
+    marginBottom: 20,
   },
   input: {
-    width: "80%",
-    marginVertical: 10,
+    marginVertical: 6,
     borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "gray",
-    padding: 10,
+    borderRadius: 20,
+    borderColor: "#d4d4d4",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
   error: {
     color: "red",
+  },
+  btn: {
+    width: "80%",
+    borderRadius: 20,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  btnText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
