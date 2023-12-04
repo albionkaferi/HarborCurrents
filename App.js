@@ -45,11 +45,11 @@ export default function App() {
     const bootstrapAsync = async () => {
       let userToken;
 
-      try {
-        userToken = await SecureStore.getItemAsync("userToken");
-      } catch (e) {
-        console.log(e);
-      }
+      // try {
+      //   userToken = await SecureStore.getItemAsync("userToken");
+      // } catch (e) {
+      //   console.log(e);
+      // }
 
       dispatch({ type: "RESTORE_TOKEN", token: userToken });
     };
@@ -91,6 +91,7 @@ export default function App() {
             initialRouteName="Map"
             screenOptions={{
               activeTintColor: "#e91e63",
+              headerShown: false,
               tabBarStyle: { padding: 10, height: 100 },
               tabBarLabelStyle: { marginBottom: 10, fontSize: 12 },
             }}
