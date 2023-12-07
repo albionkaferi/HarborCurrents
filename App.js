@@ -39,7 +39,7 @@ export default function App() {
       isLoading: true,
       isSignout: false,
       userToken: null,
-    }
+    },
   );
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function App() {
       },
       signOut: () => dispatch({ type: "SIGN_OUT" }),
     }),
-    []
+    [],
   );
 
   return (
