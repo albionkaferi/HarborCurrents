@@ -6,6 +6,7 @@ import ChartScreen from "./screens/ChartScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import LoginScreen from "./screens/LoginScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import SettingsProvider from "./contexts/SettingsContext";
 
 const AuthContext = React.createContext();
 const Tab = createBottomTabNavigator();
@@ -85,65 +86,68 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        {state.userToken != null ? (
-          <Tab.Navigator
-            initialRouteName="Map"
-            screenOptions={{
-              activeTintColor: "#e91e63",
-              headerShown: false,
-              tabBarStyle: { padding: 10, height: 100 },
-              tabBarLabelStyle: { marginBottom: 10, fontSize: 12 },
-            }}
-          >
-            <Tab.Screen
-              name="Chart"
-              component={ChartScreen}
-              options={{
-                tabBarLabel: "Chart",
-                tabBarIcon: ({ focused, color, size }) => (
-                  <Ionicons
-                    name={focused ? "bar-chart" : "bar-chart-outline"}
-                    color={color}
-                    size={size}
-                  />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Map"
-              component={MapScreen}
-              options={{
-                tabBarLabel: "Map",
-                tabBarIcon: ({ focused, color, size }) => (
-                  <Ionicons
-                    name={focused ? "map" : "map-outline"}
-                    color={color}
-                    size={size}
-                  />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Settings"
-              options={{
-                tabBarLabel: "Settings",
-                tabBarIcon: ({ focused, color, size }) => (
-                  <Ionicons
-                    name={focused ? "settings" : "settings-outline"}
-                    color={color}
-                    size={size}
-                  />
-                ),
+      <SettingsProvider>
+        <NavigationContainer>
+          {/*Load app when token is null to bypass sign (for testing purposes)*/}
+          {state.userToken == null ? (
+            <Tab.Navigator
+              initialRouteName="Map"
+              screenOptions={{
+                activeTintColor: "#e91e63",
+                headerShown: false,
+                tabBarStyle: { padding: 10, height: 100 },
+                tabBarLabelStyle: { marginBottom: 10, fontSize: 12 },
               }}
             >
-              {() => <SettingsScreen AuthContext={AuthContext} />}
-            </Tab.Screen>
-          </Tab.Navigator>
-        ) : (
-          <LoginScreen AuthContext={AuthContext} />
-        )}
-      </NavigationContainer>
+              <Tab.Screen
+                name="Chart"
+                component={ChartScreen}
+                options={{
+                  tabBarLabel: "Chart",
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Ionicons
+                      name={focused ? "bar-chart" : "bar-chart-outline"}
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Map"
+                component={MapScreen}
+                options={{
+                  tabBarLabel: "Map",
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Ionicons
+                      name={focused ? "map" : "map-outline"}
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Settings"
+                options={{
+                  tabBarLabel: "Settings",
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Ionicons
+                      name={focused ? "settings" : "settings-outline"}
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
+              >
+                {() => <SettingsScreen AuthContext={AuthContext} />}
+              </Tab.Screen>
+            </Tab.Navigator>
+          ) : (
+            <LoginScreen AuthContext={AuthContext} />
+          )}
+        </NavigationContainer>
+      </SettingsProvider>
     </AuthContext.Provider>
   );
 }
