@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { View, TextInput, Text, Pressable, StyleSheet } from "react-native";
+import { AuthContext } from "../contexts/AuthContext";
 
-export default function LoginScreen({ AuthContext }) {
+export default function LoginScreen() {
+  const { signIn } = useContext(AuthContext);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const { signIn } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>

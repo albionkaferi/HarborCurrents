@@ -8,6 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import { SettingsContext } from "../contexts/SettingsContext";
+import { AuthContext } from "../contexts/AuthContext";
 
 const SelectorButton = ({
   title,
@@ -33,7 +34,7 @@ const SelectorButton = ({
   );
 };
 
-export default function SettingsScreen({ AuthContext }) {
+export default function SettingsScreen() {
   const { signOut } = useContext(AuthContext);
   const { position, storePosition } = useContext(SettingsContext);
 
