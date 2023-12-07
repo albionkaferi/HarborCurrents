@@ -1,70 +1,109 @@
-import { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { useContext } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  Pressable,
+} from "react-native";
+import { SettingsContext } from "../contexts/SettingsContext";
+
+const SelectorButton = ({
+  title,
+  value,
+  selectedValue,
+  setSelectedValue,
+  last = false,
+}) => {
+  const isSelected = value === selectedValue;
+  const selectedButtonStyle = isSelected ? { backgroundColor: "#a3a3a3" } : {};
+  const selectedTextStyle = isSelected ? { color: "#f5f5f5" } : {};
+  const lastButtonStyle = last
+    ? { borderTopRightRadius: 6, borderBottomRightRadius: 6 }
+    : {};
+
+  return (
+    <Pressable
+      style={[styles.btn, selectedButtonStyle, lastButtonStyle]}
+      onPress={() => setSelectedValue(value)}
+    >
+      <Text style={[styles.text, selectedTextStyle]}>{title}</Text>
+    </Pressable>
+  );
+};
 
 export default function SettingsScreen({ AuthContext }) {
   const { signOut } = useContext(AuthContext);
-  const [date, setDate] = useState(new Date());
-
-  const minDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const maxDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
-  };
+  const { position, storePosition } = useContext(SettingsContext);
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.title}>
-          {date.toLocaleDateString()}{" "}
-          {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.setting}>
+        <Text style={[styles.text, { paddingLeft: 12 }]}>
+          DateTime Selector
         </Text>
-        <View style={styles.pickerContainer}>
-          <DateTimePicker
-            testID="datePicker"
-            value={date}
-            mode={"date"}
-            is24Hour={true}
-            onChange={onChange}
-            minimumDate={minDate}
-            maximumDate={maxDate}
+        <View style={styles.btnContainer}>
+          <SelectorButton
+            title="Top"
+            value="top"
+            selectedValue={position}
+            setSelectedValue={storePosition}
           />
-          <DateTimePicker
-            testID="timePicker"
-            value={date}
-            mode={"time"}
-            is24Hour={true}
-            onChange={onChange}
-            minuteInterval={10}
+          <SelectorButton
+            title="Bottom"
+            value="bottom"
+            selectedValue={position}
+            setSelectedValue={storePosition}
+            last={true}
           />
         </View>
       </View>
-      <Button title="Log Out" onPress={signOut} />
-    </View>
+      <Pressable onPress={signOut} style={styles.signOutBtn}>
+        <Text style={styles.signOutText}>Sign Out</Text>
+      </Pressable>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 40,
-    justifyContent: "space-between",
-    paddingBottom: 30,
+    alignItems: "center",
   },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 10,
-    marginBottom: 20,
-  },
-
-  pickerContainer: {
+  setting: {
+    backgroundColor: "#d4d4d4",
     flexDirection: "row",
+    justifyContent: "space-between",
+    borderRadius: 6,
+    width: "90%",
+  },
+  text: {
+    fontSize: 18,
+    paddingVertical: 8,
+    color: "#404040",
+  },
+  btnContainer: {
+    flexDirection: "row",
+  },
+  btn: {
+    width: 80,
+    borderLeftWidth: 1,
+    borderLeftColor: "white",
     justifyContent: "center",
-    padding: 20,
-    marginBottom: 40,
+    alignItems: "center",
+  },
+  signOutBtn: {
+    position: "absolute",
+    bottom: 40,
+    borderWidth: 2,
+    borderColor: "#a3a3a3",
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  signOutText: {
+    fontSize: 18,
+    color: "#404040",
   },
 });
