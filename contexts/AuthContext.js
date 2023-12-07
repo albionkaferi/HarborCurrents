@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useReducer, createContext } from "react";
+import * as SecureStore from "expo-secure-store";
 
 export const AuthContext = createContext();
 
@@ -30,19 +31,17 @@ export default function AuthProvider({ children }) {
       isLoading: true,
       isSignout: false,
       userToken: null,
-    },
+    }
   );
 
   useEffect(() => {
     const bootstrapAsync = async () => {
       let userToken;
-
-      // try {
-      //   userToken = await SecureStore.getItemAsync("userToken");
-      // } catch (e) {
-      //   console.log(e);
-      // }
-
+      try {
+        userToken = await SecureStore.getItemAsync("userToken");
+      } catch (e) {
+        console.error(e);
+      }
       dispatch({ type: "RESTORE_TOKEN", token: userToken });
     };
 
@@ -54,7 +53,7 @@ export default function AuthProvider({ children }) {
       signIn: async (data, setError) => {
         try {
           // ** REPLACE "localhost" with your private IPv4 Address
-          const response = await fetch("http://192.168.1.7:8080/verify", {
+          const response = await fetch("http://localhost:8080/verify", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -62,17 +61,25 @@ export default function AuthProvider({ children }) {
             body: JSON.stringify(data),
           });
           if (response.status == 200) {
+            await SecureStore.setItemAsync("userToken", "dummy-auth-token");
             dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
           } else {
             setError("Invalid Credentials");
           }
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       },
-      signOut: () => dispatch({ type: "SIGN_OUT" }),
+      signOut: async () => {
+        try {
+          await SecureStore.deleteItemAsync("userToken");
+          dispatch({ type: "SIGN_OUT" });
+        } catch (e) {
+          console.error(e);
+        }
+      },
     }),
-    [state],
+    [state]
   );
 
   return (
