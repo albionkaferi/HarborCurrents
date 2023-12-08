@@ -5,13 +5,18 @@ import MapScreen from "./screens/MapScreen";
 import ChartScreen from "./screens/ChartScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import LoginScreen from "./screens/LoginScreen";
+import SplashScreen from "./screens/SplashScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { AuthContext } from "./contexts/AuthContext";
 
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
-  const { userToken } = useContext(AuthContext);
+  const { userToken, isLoading } = useContext(AuthContext);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <NavigationContainer>
