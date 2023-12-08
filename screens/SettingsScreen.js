@@ -1,12 +1,5 @@
 import { useContext } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  Pressable,
-} from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
 import { SettingsContext } from "../contexts/SettingsContext";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -36,7 +29,8 @@ const SelectorButton = ({
 
 export default function SettingsScreen() {
   const { signOut } = useContext(AuthContext);
-  const { position, storePosition } = useContext(SettingsContext);
+  const { position, storePosition, units, storeUnits, model, storeModel } =
+    useContext(SettingsContext);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -60,6 +54,48 @@ export default function SettingsScreen() {
           />
         </View>
       </View>
+      <View style={styles.setting}>
+        <Text style={[styles.text, { paddingLeft: 12 }]}>Units</Text>
+        <View style={styles.btnContainer}>
+          <SelectorButton
+            title="m/s"
+            value="m/s"
+            selectedValue={units}
+            setSelectedValue={storeUnits}
+          />
+          <SelectorButton
+            title="mi/h"
+            value="mi/h"
+            selectedValue={units}
+            setSelectedValue={storeUnits}
+          />
+          <SelectorButton
+            title="km/h"
+            value="km/h"
+            selectedValue={units}
+            setSelectedValue={storeUnits}
+            last={true}
+          />
+        </View>
+      </View>
+      <View style={styles.setting}>
+        <Text style={[styles.text, { paddingLeft: 12 }]}>Model</Text>
+        <View style={styles.btnContainer}>
+          <SelectorButton
+            title="Model 1"
+            value="model1"
+            selectedValue={model}
+            setSelectedValue={storeModel}
+          />
+          <SelectorButton
+            title="Model 2"
+            value="model2"
+            selectedValue={model}
+            setSelectedValue={storeModel}
+            last={true}
+          />
+        </View>
+      </View>
       <Pressable onPress={signOut} style={styles.signOutBtn}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </Pressable>
@@ -71,6 +107,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
   },
   setting: {
     backgroundColor: "#d4d4d4",
@@ -78,6 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderRadius: 6,
     width: "90%",
+    marginVertical: 8,
   },
   text: {
     fontSize: 18,

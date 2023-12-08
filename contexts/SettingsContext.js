@@ -5,6 +5,8 @@ export const SettingsContext = createContext();
 
 export default SettingsProvider = ({ children }) => {
   const [position, setPosition] = useState("top");
+  const [units, setUnits] = useState("m/s");
+  const [model, setModel] = useState("model1");
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -23,15 +25,35 @@ export default SettingsProvider = ({ children }) => {
 
   const storePosition = async (newPosition) => {
     try {
-      await AsyncStorage.setItem("position", newPosition);
       setPosition(newPosition);
+      await AsyncStorage.setItem("position", newPosition);
     } catch (e) {
       console.error("Failed to update position.");
     }
   };
 
+  const storeUnits = async (newUnits) => {
+    try {
+      setUnits(newUnits);
+      await AsyncStorage.setItem("units", newUnits);
+    } catch (e) {
+      console.error("Failed to update units.");
+    }
+  };
+
+  const storeModel = async (newModel) => {
+    try {
+      setModel(newModel);
+      await AsyncStorage.setItem("model", newModel);
+    } catch (e) {
+      console.error("Failed to update model.");
+    }
+  };
+
   return (
-    <SettingsContext.Provider value={{ position, storePosition }}>
+    <SettingsContext.Provider
+      value={{ position, storePosition, units, storeUnits, model, storeModel }}
+    >
       {children}
     </SettingsContext.Provider>
   );

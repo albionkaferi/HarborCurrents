@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, Image, Text, View } from "react-native";
 import MapView, { Callout, Marker } from "react-native-maps";
 // scripts
@@ -8,6 +8,7 @@ import {
   filterRange,
 } from "../scripts/dataManipulation.js";
 import { magnitudeToColor } from "../scripts/color.js";
+import { SettingsContext } from "../contexts/SettingsContext.js";
 
 const initialRegion = {
   latitude: 40.64769198828401,
@@ -16,7 +17,14 @@ const initialRegion = {
   longitudeDelta: 0.12868797758112294,
 };
 
-function dataToMarker(dataPoint, index) {
+function dataToMarker(dataPoint, index, units) {
+  let magnitude = dataPoint.magnitude;
+  if (units === "mi/h") {
+    magnitude *= 2.23694;
+  } else if (units == "km/h") {
+    magnitude *= 3.6;
+  }
+
   return (
     <Marker
       coordinate={dataPoint.point}
@@ -34,13 +42,13 @@ function dataToMarker(dataPoint, index) {
       />
       <Callout style={styles.markerInfoStyle}>
         <Text>
-          {`Latitude: ${dataPoint.point.latitude.toFixed(
+          {`Magnitude: ${magnitude.toFixed(
             3,
-          )}\nLongitude: ${dataPoint.point.longitude.toFixed(
+          )} ${units}\nDirection: ${dataPoint.direction.toFixed(
             3,
-          )}\nMagnitude: ${dataPoint.magnitude.toFixed(
+          )}°\nLatitude: ${dataPoint.point.latitude.toFixed(
             3,
-          )} m/s\nDirection: ${dataPoint.direction.toFixed(3)}°`}
+          )}\nLongitude: ${dataPoint.point.longitude.toFixed(3)}`}
         </Text>
       </Callout>
     </Marker>
@@ -48,14 +56,15 @@ function dataToMarker(dataPoint, index) {
 }
 
 function MapDisplay(props) {
+  const { units } = useContext(SettingsContext);
+  const [mapData, setMapData] = useState(averageData(props.data, 20));
+
   function updateData(region) {
     const out = Math.floor(
       200 * (region.latitudeDelta - 0.08414570425311751) + 20,
     );
     setMapData(filterRange(averageData(props.data, out), region));
   }
-
-  const [mapData, setMapData] = useState(averageData(props.data, 20));
 
   return (
     <MapView
@@ -70,7 +79,7 @@ function MapDisplay(props) {
       onRegionChangeComplete={updateData}
       initialRegion={initialRegion}
     >
-      {mapData.map(dataToMarker)}
+      {mapData.map((dataPoint, index) => dataToMarker(dataPoint, index, units))}
     </MapView>
   );
 }
