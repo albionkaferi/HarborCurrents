@@ -21,8 +21,8 @@ function dataToMarker(dataPoint, index, units) {
   let magnitude = dataPoint.magnitude;
   if (units === "mi/h") {
     magnitude *= 2.23694;
-  } else if (units == "km/h") {
-    magnitude *= 3.6;
+  } else if (units == "knots") {
+    magnitude *= 1.94384;
   }
 
   return (
@@ -43,12 +43,10 @@ function dataToMarker(dataPoint, index, units) {
       <Callout style={styles.markerInfoStyle}>
         <Text>
           {`Magnitude: ${magnitude.toFixed(
-            3,
-          )} ${units}\nDirection: ${dataPoint.direction.toFixed(
-            3,
-          )}°\nLatitude: ${dataPoint.point.latitude.toFixed(
-            3,
-          )}\nLongitude: ${dataPoint.point.longitude.toFixed(3)}`}
+            2
+          )} ${units}\nDirection: ${dataPoint.direction.toFixed()}°\nLatitude: ${dataPoint.point.latitude.toFixed(
+            2
+          )}\nLongitude: ${dataPoint.point.longitude.toFixed(2)}`}
         </Text>
       </Callout>
     </Marker>
@@ -61,7 +59,7 @@ function MapDisplay(props) {
 
   function updateData(region) {
     const out = Math.floor(
-      200 * (region.latitudeDelta - 0.08414570425311751) + 20,
+      200 * (region.latitudeDelta - 0.08414570425311751) + 20
     );
     setMapData(filterRange(averageData(props.data, out), region));
   }

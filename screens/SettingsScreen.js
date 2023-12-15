@@ -58,20 +58,20 @@ export default function SettingsScreen() {
         <Text style={[styles.text, { paddingLeft: 12 }]}>Units</Text>
         <View style={styles.btnContainer}>
           <SelectorButton
+            title="knots"
+            value="knots"
+            selectedValue={units}
+            setSelectedValue={storeUnits}
+          />
+          <SelectorButton
             title="m/s"
-            value="m/s"
+            value="m/h"
             selectedValue={units}
             setSelectedValue={storeUnits}
           />
           <SelectorButton
             title="mi/h"
             value="mi/h"
-            selectedValue={units}
-            setSelectedValue={storeUnits}
-          />
-          <SelectorButton
-            title="km/h"
-            value="km/h"
             selectedValue={units}
             setSelectedValue={storeUnits}
             last={true}

@@ -5,7 +5,7 @@ export const SettingsContext = createContext();
 
 export default SettingsProvider = ({ children }) => {
   const [position, setPosition] = useState("top");
-  const [units, setUnits] = useState("m/s");
+  const [units, setUnits] = useState("knots");
   const [model, setModel] = useState("model1");
 
   useEffect(() => {
