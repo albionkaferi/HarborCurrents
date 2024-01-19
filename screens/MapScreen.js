@@ -4,30 +4,44 @@ import MapDisplay from "../components/MapDisplay";
 import { SettingsContext } from "../contexts/SettingsContext";
 import { useState, useEffect, useContext } from "react";
 import initialData from "../data/data.json";
+import { toLocalISOString } from "../lib/utils";
 
 export default function MapScreen() {
   const [data, setData] = useState(initialData);
+  const getRoundedDate = () => {
+    const newDate = new Date();
+    newDate.setMinutes(newDate.getMinutes() >= 30 ? 60 : 0);
+    newDate.setSeconds(0);
+    return newDate;
+  };
+  const [date, setDate] = useState(getRoundedDate());
 
   const { position } = useContext(SettingsContext);
   const positionStyle = position === "top" ? { top: 50 } : { bottom: 40 };
 
   useEffect(() => {
     const getData = async () => {
+      const formattedDate = toLocalISOString(date);
       // replace localhost with actual ipv4 address
       const response = await fetch(
-        "http://192.168.1.6:8080/data?time=2023-11-14%2002:40&depth=1"
+        `http://localhost:8080/data?time=${encodeURIComponent(
+          formattedDate
+        )}&depth=1`
       );
-      const currents = await response.json();
-      setData(currents.data);
+      if (response.status === 200) {
+        const currents = await response.json();
+        setData(currents.data);
+      } else {
+      }
     };
     getData();
-  }, []);
+  }, [date]);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={[styles.picker, positionStyle]}>
-        <DateTimeSettings />
+        <DateTimeSettings date={date} setDate={setDate} />
       </View>
       <View style={styles.map}>
         <MapDisplay data={data} />
