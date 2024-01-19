@@ -6,6 +6,7 @@ import {
   averageData,
   slimData,
   filterRange,
+  newFilter,
 } from "../scripts/dataManipulation.js";
 import { magnitudeToColor } from "../scripts/color.js";
 import { SettingsContext } from "../contexts/SettingsContext.js";
@@ -16,6 +17,11 @@ const initialRegion = {
   longitude: -74.13179607431394,
   longitudeDelta: 0.12868797758112294,
 };
+
+function sigmoid(input, center, divisor) {
+  const power = (input - center) / divisor;
+  return 1 / (1 + Math.pow(Math.E, -power));
+}
 
 function dataToMarker(dataPoint, index, units) {
   let magnitude = dataPoint.magnitude;
@@ -37,7 +43,7 @@ function dataToMarker(dataPoint, index, units) {
         style={{ tintColor: magnitudeToColor(dataPoint.magnitude) }}
         transform={[
           { rotate: `${dataPoint.direction}deg` },
-          { scaleX: dataPoint.magnitude * 6 },
+          { scaleX: sigmoid(dataPoint.magnitude, 0.5, 0.5) }//dataPoint.magnitude * 6 },
         ]}
       />
       <Callout style={styles.markerInfoStyle}>
@@ -59,10 +65,11 @@ function MapDisplay(props) {
 
   function updateData(region) {
     const out = Math.floor(
-      200 * (region.latitudeDelta - 0.08414570425311751) + 20
+      20 * (region.latitudeDelta - 0.08414570425311751) + 2
     );
-    setMapData(filterRange(averageData(props.data, out), region));
+    setMapData(newFilter(props.data, region, out));
   }
+  
 
   return (
     <MapView
