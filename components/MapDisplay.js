@@ -7,8 +7,8 @@ import {
   slimData,
   filterRange,
   newFilter,
-} from "../scripts/dataManipulation.js";
-import { magnitudeToColor } from "../scripts/color.js";
+} from "../lib/dataManipulation.js";
+import { magnitudeToColor } from "../lib/utils.js";
 import { SettingsContext } from "../contexts/SettingsContext.js";
 
 const initialRegion = {
@@ -43,7 +43,7 @@ function dataToMarker(dataPoint, index, units) {
         style={{ tintColor: magnitudeToColor(dataPoint.magnitude) }}
         transform={[
           { rotate: `${dataPoint.direction}deg` },
-          { scaleX: sigmoid(dataPoint.magnitude, 0.5, 0.5) }//dataPoint.magnitude * 6 },
+          { scaleX: sigmoid(dataPoint.magnitude, 0.5, 0.5) }, //dataPoint.magnitude * 6 },
         ]}
       />
       <Callout style={styles.markerInfoStyle}>
@@ -69,7 +69,6 @@ function MapDisplay(props) {
     );
     setMapData(newFilter(props.data, region, out));
   }
-  
 
   return (
     <MapView

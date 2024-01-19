@@ -10,40 +10,41 @@ const maxDate = new Date();
 maxDate.setDate(maxDate.getDate() + 7);
 maxDate.setHours(0, 0, 0, 0);
 
-export default function DateTimeSettings() {
-  const getRoundedDate = () => {
-    const newDate = new Date();
-    newDate.setMinutes(newDate.getMinutes() >= 30 ? 60 : 0);
-    newDate.setSeconds(0);
-    return newDate;
-  };
-  const [date, setDate] = useState(getRoundedDate());
+export default function DateTimeSettings({ date, setDate }) {
   const [isMinDate, setIsMinDate] = useState(false);
   const [isMaxDate, setIsMaxDate] = useState(false);
   const [isMinTime, setIsMinTime] = useState(false);
   const [isMaxTime, setIsMaxTime] = useState(false);
 
-  useEffect(() => {
-    const newIsMinDate = date <= minDate;
-    const newIsMaxDate = date >= maxDate;
-    setIsMinDate(newIsMinDate);
-    setIsMaxDate(newIsMaxDate);
+  // useEffect(() => {
+  //   const newIsMinDate = date <= minDate;
+  //   const newIsMaxDate = date >= maxDate;
+  //   setIsMinDate(newIsMinDate);
+  //   setIsMaxDate(newIsMaxDate);
 
-    if (newIsMinDate) {
-      setIsMinTime(date.getHours() === 0);
-    } else {
-      setIsMinTime(false);
-    }
+  //   if (newIsMinDate) {
+  //     setIsMinTime(date.getHours() === 0);
+  //   } else {
+  //     setIsMinTime(false);
+  //   }
 
-    if (newIsMaxDate) {
-      setIsMaxTime(date.getHours() === 23);
-    } else {
-      setIsMaxTime(false);
-    }
-  }, [date]);
+  //   if (newIsMaxDate) {
+  //     setIsMaxTime(date.getHours() === 23);
+  //   } else {
+  //     setIsMaxTime(false);
+  //   }
+  // }, [date]);
 
   const onChange = (event, selectedDate) => {
     const newDate = new Date(selectedDate);
+    const minutes = selectedDate.getMinutes();
+    if (minutes > 40) {
+      newDate.setMinutes(60);
+    } else if (minutes > 20) {
+      newDate.setMinutes(40);
+    } else {
+      newDate.setMinutes(20);
+    }
     newDate.setMinutes(selectedDate.getMinutes() >= 30 ? 60 : 0);
     setDate(newDate);
   };
@@ -51,19 +52,19 @@ export default function DateTimeSettings() {
   const onClick = (type, operation) => {
     const newDate = new Date(date);
     if (type === "date") {
-      if (
-        (operation === "increment" && isMaxDate) ||
-        (operation === "decrement" && isMinDate)
-      )
-        return;
+      // if (
+      //   (operation === "increment" && isMaxDate) ||
+      //   (operation === "decrement" && isMinDate)
+      // )
+      //   return;
       const value = operation === "increment" ? 1 : -1;
       newDate.setDate(newDate.getDate() + value);
     } else if (type === "time") {
-      if (
-        (operation === "increment" && isMaxTime) ||
-        (operation === "decrement" && isMinTime)
-      )
-        return;
+      // if (
+      //   (operation === "increment" && isMaxTime) ||
+      //   (operation === "decrement" && isMinTime)
+      // )
+      //   return;
       const value = operation === "increment" ? 1 : -1;
       newDate.setHours(newDate.getHours() + value);
     }
@@ -89,8 +90,8 @@ export default function DateTimeSettings() {
           mode={"date"}
           is24Hour={true}
           onChange={onChange}
-          minimumDate={minDate}
-          maximumDate={maxDate}
+          // minimumDate={minDate}
+          // maximumDate={maxDate}
         />
         <Pressable
           style={() => [
@@ -117,7 +118,7 @@ export default function DateTimeSettings() {
           testID="timePicker"
           value={date}
           mode={"time"}
-          minuteInterval={30}
+          minuteInterval={20}
           is24Hour={true}
           onChange={onChange}
         />
