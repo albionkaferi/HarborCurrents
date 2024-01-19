@@ -28,7 +28,7 @@ function averagePoints(pointsArray) {
 
 // filter points by if they're on land
 function filterPoints(pointsArray) {
-  return pointsArray.filter((point) => point[2] > -900);
+  return pointsArray.filter((point) => Math.min(...point) > -900);
 }
 
 // convert point array to point struct
@@ -98,4 +98,44 @@ export function filterRange(idata, region) {
     return lat_range && lon_range;
   }
   return idata.filter(inRange);
+}
+
+function filterRange2(idata, region) {
+  function inRange(point) {
+    const lat_range =
+      point[0] > region.latitude - region.latitudeDelta &&
+      point[0] < region.latitude + region.latitudeDelta;
+    const lon_range =
+      point[1] > region.longitude - region.longitudeDelta &&
+      point[1] < region.longitude + region.longitudeDelta;
+    return lat_range && lon_range;
+  }
+  return idata.filter(inRange);
+}
+
+function distance(point1, point2) {
+  const dist_x = point2[0] - point1[0];
+  const dist_y = point2[1] - point2[1];
+  return Math.sqrt(dist_x * dist_x + dist_y * dist_y);
+}
+
+export function newFilter(idata, region, average) {
+  const before_flattened = filterRange2(idata.flat(), region);
+  const point_distance = distance(before_flattened[0], before_flattened[1]);
+  const amount = 100 / (region.latitudeDelta / point_distance);
+
+  
+  const mth_element = (_, index) => index % (average * 5) === 0;
+  //let out_data = idata
+  //  .filter(mth_element)
+  //  .map((arr) => arr.filter(nth_element));
+
+
+  const flattened = idata.flat();
+  const filtered = flattened.filter((point) => Math.min(...point) > -900);
+  const arrayMapped = filtered.map(arrayToMap);
+  const ranged = filterRange(arrayMapped.filter((point) => point.magnitude > 0), region);
+  const nth_element = (_, index) => index % Math.floor(ranged.length / 100) === 0;
+
+  return ranged.filter(nth_element);
 }

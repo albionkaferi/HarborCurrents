@@ -15,7 +15,7 @@ export default function MapScreen() {
     const getData = async () => {
       // replace localhost with actual ipv4 address
       const response = await fetch(
-        "http://localhost:8080/data?time=2023-11-14%2002:40&depth=1"
+        "http://192.168.1.6:8080/data?time=2023-11-14%2002:40&depth=1"
       );
       const currents = await response.json();
       setData(currents.data);

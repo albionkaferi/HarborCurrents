@@ -53,7 +53,7 @@ export default function AuthProvider({ children }) {
       signIn: async (data, setError) => {
         try {
           // ** REPLACE "localhost" with your private IPv4 Address
-          const response = await fetch("http://localhost:8080/verify", {
+          const response = await fetch("http://192.168.1.6:8080/verify", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
