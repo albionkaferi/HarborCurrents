@@ -53,13 +53,16 @@ export default function AuthProvider({ children }) {
       signIn: async (data, setError) => {
         try {
           // ** REPLACE "localhost" with your private IPv4 Address
-          const response = await fetch("http://localhost:8080/verify", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
+          const response = await fetch(
+            "https://harbor-currents-api.onrender.com/verify",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            }
+          );
           if (response.status == 200) {
             await SecureStore.setItemAsync("userToken", "dummy-auth-token");
             dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });

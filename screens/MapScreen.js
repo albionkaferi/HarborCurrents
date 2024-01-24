@@ -24,7 +24,7 @@ export default function MapScreen() {
       const formattedDate = toLocalISOString(date);
       // replace localhost with actual ipv4 address
       const response = await fetch(
-        `http://localhost:8080/data?time=${encodeURIComponent(
+        `https://harbor-currents-api.onrender.com/data?time=${encodeURIComponent(
           formattedDate
         )}&depth=1`
       );
