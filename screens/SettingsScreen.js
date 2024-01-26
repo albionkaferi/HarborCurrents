@@ -29,8 +29,16 @@ const SelectorButton = ({
 
 export default function SettingsScreen() {
   const { signOut } = useContext(AuthContext);
-  const { position, storePosition, units, storeUnits, model, storeModel } =
-    useContext(SettingsContext);
+  const {
+    position,
+    storePosition,
+    units,
+    storeUnits,
+    model,
+    storeModel,
+    depth,
+    storeDepth,
+  } = useContext(SettingsContext);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,6 +100,24 @@ export default function SettingsScreen() {
             value="model2"
             selectedValue={model}
             setSelectedValue={storeModel}
+            last={true}
+          />
+        </View>
+      </View>
+      <View style={styles.setting}>
+        <Text style={[styles.text, { paddingLeft: 12 }]}>Depth</Text>
+        <View style={styles.btnContainer}>
+          <SelectorButton
+            title="Surface"
+            value="1"
+            selectedValue={depth}
+            setSelectedValue={storeDepth}
+          />
+          <SelectorButton
+            title="Mid-level"
+            value="5"
+            selectedValue={depth}
+            setSelectedValue={storeDepth}
             last={true}
           />
         </View>

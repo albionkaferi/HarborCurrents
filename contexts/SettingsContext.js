@@ -7,6 +7,7 @@ export default SettingsProvider = ({ children }) => {
   const [position, setPosition] = useState("top");
   const [units, setUnits] = useState("knots");
   const [model, setModel] = useState("model1");
+  const [depth, setDepth] = useState("1");
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -50,9 +51,27 @@ export default SettingsProvider = ({ children }) => {
     }
   };
 
+  const storeDepth = async (newDepth) => {
+    try {
+      setDepth(newDepth);
+      await AsyncStorage.setItem("depth", newDepth);
+    } catch (e) {
+      console.error("failed to update depth.");
+    }
+  };
+
   return (
     <SettingsContext.Provider
-      value={{ position, storePosition, units, storeUnits, model, storeModel }}
+      value={{
+        position,
+        storePosition,
+        units,
+        storeUnits,
+        model,
+        storeModel,
+        depth,
+        storeDepth,
+      }}
     >
       {children}
     </SettingsContext.Provider>
