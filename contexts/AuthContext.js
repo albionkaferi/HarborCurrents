@@ -52,9 +52,8 @@ export default function AuthProvider({ children }) {
     () => ({
       signIn: async (data, setError) => {
         try {
-          // ** REPLACE "localhost" with your private IPv4 Address
           const response = await fetch(
-            "https://harbor-currents-api.onrender.com/verify",
+            "https://harbor-currents-api.onrender.com/signin",
             {
               method: "POST",
               headers: {
@@ -63,9 +62,11 @@ export default function AuthProvider({ children }) {
               body: JSON.stringify(data),
             }
           );
+          const data = await response.json();
           if (response.status == 200) {
-            await SecureStore.setItemAsync("userToken", "dummy-auth-token");
-            dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+            const token = data.token;
+            await SecureStore.setItemAsync("userToken", token);
+            dispatch({ type: "SIGN_IN", token: token });
           } else {
             setError("Invalid Credentials");
           }
