@@ -1,9 +1,36 @@
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
+import { formatPredicted } from '../lib/webScraper.js';
 
 export default function ChartScreen() {
   const screenWidth = Dimensions.get("window").width;
+  const [scraperData, setScraperData] = useState(null);
+  const [deltaData, setDeltaData] = useState(null);
+  const [speedData, setSpeedData] = useState(null);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await formatPredicted("https://cdn.tidesandcurrents.noaa.gov/ports/plots/n06010_cu_pred_24.html");
+        let delta = []
+        let echo = []
+        for (let i = 0; i < data.length; i++) {
+          delta.push(data[i][0])
+          echo.push(data[i][1])
+        }
+        setDeltaData(delta);
+        setSpeedData(echo);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const chartConfig = {
     backgroundColor: "#f3f3f3",
@@ -14,11 +41,15 @@ export default function ChartScreen() {
     barPercentage: 0.5,
   };
 
+  if (!deltaData || !speedData) {
+    return null; // You can return a loading indicator here
+  }
+
   const data = {
-    labels: ["02", "08", "14", "20", "26", "32", "38", "44", "50", "56"],
+    labels: deltaData,
     datasets: [
       {
-        data: [0.57, 0.44, 0.62, 0.47, 0.34, 0.24, 0.33, 0.26, 0.22, 0.11],
+        data: speedData,
         color: (opacity = 1) => `rgba(10, 66, 145, ${opacity})`,
         strokeWidth: 2,
       },
@@ -56,3 +87,4 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
+//y
