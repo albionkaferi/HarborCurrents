@@ -140,7 +140,19 @@ export default function DateTimeSettings({ date, setDate }) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    alignSelf: "center",
+    backgroundColor: "#f5f5f5",
+    padding: 10,
+    zIndex: 1,
+    shadowColor: "#171717",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
   pickerContainer: {
     flexDirection: "row",
     justifyContent: "center",
