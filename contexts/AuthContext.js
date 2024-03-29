@@ -50,7 +50,7 @@ export default function AuthProvider({ children }) {
 
   const authContext = useMemo(
     () => ({
-      signIn: async (data, setError) => {
+      signIn: async (credentials, setError) => {
         try {
           const response = await fetch(
             "https://harbor-currents-api.onrender.com/signin",
@@ -59,7 +59,7 @@ export default function AuthProvider({ children }) {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(data),
+              body: JSON.stringify(credentials),
             }
           );
           const data = await response.json();
