@@ -11,7 +11,7 @@ export default function ColorScale() {
         onPress={() => setTableVisible(!tableVisible)}
       >
         <Text style={styles.buttonText}>
-          {tableVisible ? "Hide Table" : "Show Table"}
+          {tableVisible ? "Hide Scale" : "Show Scale"}
         </Text>
       </TouchableOpacity>
       <ColorTable visible={tableVisible} />
@@ -61,12 +61,12 @@ const ColorTable = ({ visible }) => {
 const styles = StyleSheet.create({
   table: {
     position: "absolute",
-    top: 10, // Adjust as needed
-    right: 10, // Adjust as needed
-    zIndex: 2, // Ensure it's above the WebView
+    top: 10,
+    right: 10,
+    zIndex: 2,
     padding: 10,
-    width: 100, // Set explicit width
-    maxHeight: "50%", // Set max height to prevent covering the WebView
+    width: 100,
+    maxHeight: "50%",
   },
   row: {
     paddingVertical: 0,
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2, // Add border width
-    borderColor: "black", // Add border color
+    borderWidth: 2,
+    borderColor: "black",
   },
   rowText: {
     fontSize: 12,
@@ -87,11 +87,15 @@ const styles = StyleSheet.create({
     top: 20,
     left: 20,
     zIndex: 2,
-    padding: 10,
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    width: 112,
+    height: 36,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
   },
   buttonText: {
     color: "white",
+    fontWeight: "bold",
   },
 });
