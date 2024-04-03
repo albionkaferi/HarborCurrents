@@ -21,7 +21,7 @@ export default function ColorScale() {
 
 const ColorTable = ({ visible }) => {
   const getColorForValue = (value) => {
-    const max = 0.55;
+    const max = 1;
     const min = 0.0;
     const range = max - min;
     const normalizedValue = (value - min) / range;
@@ -35,8 +35,8 @@ const ColorTable = ({ visible }) => {
 
   // Generate row values ranging from 0.00 to 0.55 in increments of 0.05
   const rows = [];
-  for (let i = 0; i <= 0.55; i += 0.05) {
-    rows.push(i.toFixed(2));
+  for (let i = 0; i <= 1.1; i += 0.1) {
+    rows.push((i).toFixed(2));
   }
 
   return (
@@ -50,8 +50,8 @@ const ColorTable = ({ visible }) => {
           ]}
         >
           <Text style={styles.rowText}>{`${
-            parseFloat(row) === 0.55 ? "0.55+" : row
-          } m/s`}</Text>
+            parseFloat(row) === 1.1 ? "1.1+" : row
+          } knots`}</Text>
         </View>
       ))}
     </View>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 2,
     padding: 10,
-    width: 100,
+    width: 105,
     maxHeight: "50%",
   },
   row: {
