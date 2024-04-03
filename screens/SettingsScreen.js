@@ -1,174 +1,123 @@
-import { useContext } from "react";
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
+import { useContext } from "react";
 import { SettingsContext } from "../contexts/SettingsContext";
 import { AuthContext } from "../contexts/AuthContext";
 
-const SelectorButton = ({
-  title,
-  value,
-  selectedValue,
-  setSelectedValue,
-  last = false,
-}) => {
-  const isSelected = value === selectedValue;
-  const selectedButtonStyle = isSelected ? { backgroundColor: "#a3a3a3" } : {};
-  const selectedTextStyle = isSelected ? { color: "#f5f5f5" } : {};
-  const lastButtonStyle = last
-    ? { borderTopRightRadius: 6, borderBottomRightRadius: 6 }
-    : {};
-
-  return (
-    <Pressable
-      style={[styles.btn, selectedButtonStyle, lastButtonStyle]}
-      onPress={() => setSelectedValue(value)}
-    >
-      <Text style={[styles.text, selectedTextStyle]}>{title}</Text>
-    </Pressable>
-  );
-};
-
 export default function SettingsScreen() {
   const { signOut } = useContext(AuthContext);
-  const {
-    position,
-    storePosition,
-    units,
-    storeUnits,
-    model,
-    storeModel,
-    depth,
-    storeDepth,
-  } = useContext(SettingsContext);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.setting}>
-        <Text style={[styles.text, { paddingLeft: 12 }]}>
-          DateTime Selector
-        </Text>
-        <View style={styles.btnContainer}>
-          <SelectorButton
-            title="Top"
-            value="top"
-            selectedValue={position}
-            setSelectedValue={storePosition}
-          />
-          <SelectorButton
-            title="Bottom"
-            value="bottom"
-            selectedValue={position}
-            setSelectedValue={storePosition}
-            last={true}
-          />
+      <View style={styles.settingsContainer}>
+        <Text style={styles.header}>Settings</Text>
+        <View style={styles.setting}>
+          <Text style={styles.label}>Units</Text>
+          <View style={styles.optionsContainer}>
+            <SelectorButton title="Knots" value="knots" type="units" />
+            <SelectorButton title="m/s" value="m/s" type="units" />
+          </View>
+        </View>
+        <View style={styles.setting}>
+          <Text style={styles.label}>Depth</Text>
+          <View style={styles.optionsContainer}>
+            <SelectorButton title="Surface" value="1" type="depth" />
+            <SelectorButton title="Mid-level" value="5" type="depth" />
+          </View>
+        </View>
+        <View style={styles.setting}>
+          <Text style={styles.label}>Model</Text>
+          <View style={styles.optionsContainer}>
+            <SelectorButton title="Model 1" value="model1" type="model" />
+            <SelectorButton title="Model 2" value="model2" type="model" />
+          </View>
         </View>
       </View>
-      <View style={styles.setting}>
-        <Text style={[styles.text, { paddingLeft: 12 }]}>Units</Text>
-        <View style={styles.btnContainer}>
-          <SelectorButton
-            title="knots"
-            value="knots"
-            selectedValue={units}
-            setSelectedValue={storeUnits}
-          />
-          <SelectorButton
-            title="m/s"
-            value="m/h"
-            selectedValue={units}
-            setSelectedValue={storeUnits}
-          />
-          <SelectorButton
-            title="mi/h"
-            value="mi/h"
-            selectedValue={units}
-            setSelectedValue={storeUnits}
-            last={true}
-          />
-        </View>
-      </View>
-      <View style={styles.setting}>
-        <Text style={[styles.text, { paddingLeft: 12 }]}>Model</Text>
-        <View style={styles.btnContainer}>
-          <SelectorButton
-            title="Model 1"
-            value="model1"
-            selectedValue={model}
-            setSelectedValue={storeModel}
-          />
-          <SelectorButton
-            title="Model 2"
-            value="model2"
-            selectedValue={model}
-            setSelectedValue={storeModel}
-            last={true}
-          />
-        </View>
-      </View>
-      <View style={styles.setting}>
-        <Text style={[styles.text, { paddingLeft: 12 }]}>Depth</Text>
-        <View style={styles.btnContainer}>
-          <SelectorButton
-            title="Surface"
-            value="1"
-            selectedValue={depth}
-            setSelectedValue={storeDepth}
-          />
-          <SelectorButton
-            title="Mid-level"
-            value="5"
-            selectedValue={depth}
-            setSelectedValue={storeDepth}
-            last={true}
-          />
-        </View>
-      </View>
-      <Pressable onPress={signOut} style={styles.signOutBtn}>
+      <Pressable
+        onPress={signOut}
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? "#7dd3fc" : "#0ea5e9" },
+          styles.signOutBtn,
+        ]}
+      >
         <Text style={styles.signOutText}>Sign Out</Text>
       </Pressable>
     </SafeAreaView>
   );
 }
 
+const SelectorButton = ({ title, value, type }) => {
+  const { units, model, depth, storeItem } = useContext(SettingsContext);
+
+  const map = { units, model, depth };
+  const selectedValue = map[type];
+  const isSelected = value === selectedValue;
+  const selectedButtonStyle = isSelected
+    ? { borderWidth: 2, borderColor: "#007bff" }
+    : { borderWidth: 2, borderColor: "borderColor: 'rgba(158, 150, 150, .5)'" };
+
+  return (
+    <Pressable
+      style={[styles.option, selectedButtonStyle]}
+      onPress={() => storeItem(type, value)}
+    >
+      <Text style={styles.optionText}>{title}</Text>
+    </Pressable>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
+  },
+  settingsContainer: {
+    marginTop: 36,
+    width: "100%",
+  },
+  header: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#191919",
+    paddingLeft: 32,
+    marginBottom: 48,
   },
   setting: {
-    backgroundColor: "#d4d4d4",
+    flexDirection: "column",
+    width: "100%",
+    paddingHorizontal: 32,
+    marginBottom: 28,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#191919",
+  },
+  optionsContainer: {
+    marginTop: 8,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderRadius: 6,
-    width: "90%",
-    marginVertical: 8,
   },
-  text: {
-    fontSize: 18,
-    paddingVertical: 8,
-    color: "#404040",
+  option: {
+    width: 148,
+    backgroundColor: "white",
+    paddingVertical: 14,
+    borderRadius: 10,
   },
-  btnContainer: {
-    flexDirection: "row",
-  },
-  btn: {
-    width: 80,
-    borderLeftWidth: 1,
-    borderLeftColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
+  optionText: {
+    textAlign: "center",
+    fontWeight: "bold",
   },
   signOutBtn: {
-    position: "absolute",
-    bottom: 40,
-    borderWidth: 2,
-    borderColor: "#a3a3a3",
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: 28,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginBottom: 48,
   },
   signOutText: {
-    fontSize: 18,
-    color: "#404040",
+    textAlign: "center",
+    fontWeight: "bold",
+    color: "white",
   },
 });
