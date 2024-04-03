@@ -4,17 +4,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const SettingsContext = createContext();
 
 export default SettingsProvider = ({ children }) => {
-  const [position, setPosition] = useState("top");
   const [units, setUnits] = useState("knots");
-  const [model, setModel] = useState("model1");
   const [depth, setDepth] = useState("1");
+  const [model, setModel] = useState("model1");
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const storedPosition = await AsyncStorage.getItem("position");
-        if (storedPosition !== null) {
-          setPosition(storedPosition);
+        const keys = ["units", "depth", "model"];
+        const setters = [setUnits, setDepth, setModel];
+
+        for (let i = 0; i < keys.length; i++) {
+          const storedValue = await AsyncStorage.getItem(keys[i]);
+          if (storedValue !== null) {
+            setters[i](storedValue);
+          }
         }
       } catch (e) {
         console.error("Failed to fetch settings.");
@@ -24,53 +28,27 @@ export default SettingsProvider = ({ children }) => {
     fetchSettings();
   }, []);
 
-  const storePosition = async (newPosition) => {
+  const storeItem = async (key, newValue) => {
+    const setters = {
+      units: setUnits,
+      depth: setDepth,
+      model: setModel,
+    };
     try {
-      setPosition(newPosition);
-      await AsyncStorage.setItem("position", newPosition);
+      setters[key](newValue);
+      await AsyncStorage.setItem(key, newValue);
     } catch (e) {
-      console.error("Failed to update position.");
-    }
-  };
-
-  const storeUnits = async (newUnits) => {
-    try {
-      setUnits(newUnits);
-      await AsyncStorage.setItem("units", newUnits);
-    } catch (e) {
-      console.error("Failed to update units.");
-    }
-  };
-
-  const storeModel = async (newModel) => {
-    try {
-      setModel(newModel);
-      await AsyncStorage.setItem("model", newModel);
-    } catch (e) {
-      console.error("Failed to update model.");
-    }
-  };
-
-  const storeDepth = async (newDepth) => {
-    try {
-      setDepth(newDepth);
-      await AsyncStorage.setItem("depth", newDepth);
-    } catch (e) {
-      console.error("failed to update depth.");
+      console.log(`Failed to update ${key}.`);
     }
   };
 
   return (
     <SettingsContext.Provider
       value={{
-        position,
-        storePosition,
         units,
-        storeUnits,
         model,
-        storeModel,
         depth,
-        storeDepth,
+        storeItem,
       }}
     >
       {children}
