@@ -13,10 +13,20 @@ export default function App() {
   const [date, setDate] = useState(new Date());
   const { units } = useContext(SettingsContext);
   const { userToken } = useContext(AuthContext);
+  const webviewRef = useRef();
 
   useEffect(() => {
-    sendDataToWebView();
-  }, [date, units]);
+    webviewRef.current.postMessage({
+      token: userToken,
+      time: toLocalISOString(date),
+    });
+  }, [date]);
+
+  useEffect(() => {
+    webviewRef.current.postMessage({
+      units: units,
+    });
+  }, [units]);
 
   function sendDataToWebView() {
     webviewRef.current.postMessage({
@@ -25,7 +35,6 @@ export default function App() {
       units: units,
     });
   }
-  const webviewRef = useRef();
 
   return (
     <View style={styles.container}>
