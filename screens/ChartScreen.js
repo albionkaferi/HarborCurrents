@@ -9,17 +9,19 @@ export default function ChartScreen() {
   const [scraperData, setScraperData] = useState(null);
   const [deltaData, setDeltaData] = useState(null);
   const [speedData, setSpeedData] = useState(null);
-
+  const [originalTimestamp, setOriginalTimestamp] = useState(null);
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await formatPredicted("https://cdn.tidesandcurrents.noaa.gov/ports/plots/n06010_cu_pred_24.html");
+        const {data, originalTime} = await formatPredicted("https://cdn.tidesandcurrents.noaa.gov/ports/plots/n06010_cu_pred_24.html");
+        setOriginalTimestamp(originalTime);
         let delta = []
         let echo = []
         for (let i = 0; i < data.length; i++) {
-          delta.push(data[i][0])
+          if (i % Math.floor(data.length/10) === 0) delta.push(data[i][0])
+          else delta.push("")
           echo.push(data[i][1])
         }
         setDeltaData(delta);
@@ -37,8 +39,9 @@ export default function ChartScreen() {
     backgroundGradientFrom: "#f3f3f3",
     backgroundGradientTo: "#f3f3f3",
     color: (opacity = 1) => `rgba(21, 98, 207, ${opacity})`,
-    strokeWidth: 2,
+    strokeWidth: 1,
     barPercentage: 0.5,
+    withDots: false
   };
 
   if (!deltaData || !speedData) {
@@ -60,15 +63,16 @@ export default function ChartScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.dateText}>Jan 23, 2023</Text>
-        <Text style={styles.dateText}>12PM</Text>
+        <Text style={styles.titleText}>Kill Van Kull, Along Channel Velocity</Text>
+        <Text style={styles.dateText}>{originalTimestamp}</Text>
       </View>
       <LineChart
         data={data}
-        width={screenWidth}
+        width={screenWidth-20}
         height={220}
         chartConfig={chartConfig}
       />
+      <Text style={styles.axisText}>Minutes from original time</Text>
     </SafeAreaView>
   );
 }
@@ -81,10 +85,20 @@ const styles = StyleSheet.create({
   textContainer: {
     marginBottom: 12,
   },
-  dateText: {
-    fontSize: 24,
+  titleText: {
+    fontSize: 22,
     fontWeight: "500",
     marginLeft: 20,
   },
+  dateText: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginLeft: 20,
+  },
+  axisText: {
+    fontSize: 16,
+    fontWeight: "400",
+    marginLeft: 130
+  }
 });
 //y
