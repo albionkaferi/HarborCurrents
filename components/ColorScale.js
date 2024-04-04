@@ -28,7 +28,7 @@ const ColorTable = ({ visible }) => {
     const generateRows = () => {
       const newRows = [];
       if (units === "knots") {
-        for (let i = 0; i <= 1.1; i += 0.1) {
+        for (let i = 0; i <= 2.5; i += 0.25) {
           newRows.push((i).toFixed(2));
         }
       } else if (units === "m/s") {
@@ -43,9 +43,9 @@ const ColorTable = ({ visible }) => {
   }, [units]);
 
   const getColorForValue = (value) => {
-    let max = 1;
+    let max = 2.5;
     if (units == "knots"){
-      max = 1;
+      max = 2.5;
     } 
     else if (units == "m/s"){
       max = 0.55;
@@ -73,7 +73,7 @@ const ColorTable = ({ visible }) => {
             ]}
           >
             <Text style={styles.rowText}>{`${
-              parseFloat(row) === 1.1 ? "1.1+" : row
+              parseFloat(row) === 2.5 ? "2.5+" : row
             } knots`}</Text>
           </View>
         ))}
@@ -112,7 +112,7 @@ const ColorTable = ({ visible }) => {
               ]}
             >
               <Text style={styles.rowText}>{`${
-                parseFloat(row) === 1.1 ? "1.1+" : row
+                parseFloat(row) === 2.5 ? "2.5+" : row
               } knots`}</Text>
             </View>
           ))}
