@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useContext} from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { SettingsContext } from "../contexts/SettingsContext";
 
 export default function ColorScale() {
   const [tableVisible, setTableVisible] = useState(false);
@@ -20,8 +21,35 @@ export default function ColorScale() {
 }
 
 const ColorTable = ({ visible }) => {
+  const { units } = useContext(SettingsContext);
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const generateRows = () => {
+      const newRows = [];
+      if (units === "knots") {
+        for (let i = 0; i <= 1.1; i += 0.1) {
+          newRows.push((i).toFixed(2));
+        }
+      } else if (units === "m/s") {
+        for (let i = 0; i <= 0.55; i += 0.05) {
+          newRows.push((i).toFixed(2));
+        }
+      }
+      setRows(newRows);
+    };
+
+    generateRows();
+  }, [units]);
+
   const getColorForValue = (value) => {
-    const max = 1;
+    let max = 1;
+    if (units == "knots"){
+      max = 1;
+    } 
+    else if (units == "m/s"){
+      max = 0.55;
+    } 
     const min = 0.0;
     const range = max - min;
     const normalizedValue = (value - min) / range;
@@ -33,29 +61,66 @@ const ColorTable = ({ visible }) => {
     return null;
   }
 
-  // Generate row values ranging from 0.00 to 0.55 in increments of 0.05
-  const rows = [];
-  for (let i = 0; i <= 1.1; i += 0.1) {
-    rows.push((i).toFixed(2));
+  if(units == "knots"){
+    return (
+      <View style={styles.table}>
+        {rows.map((row, index) => (
+          <View
+            key={index}
+            style={[
+              styles.row,
+              { backgroundColor: getColorForValue(parseFloat(row)) },
+            ]}
+          >
+            <Text style={styles.rowText}>{`${
+              parseFloat(row) === 1.1 ? "1.1+" : row
+            } knots`}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+  else if(units == "m/s"){
+    return (
+      <View style={styles.table}>
+        {rows.map((row, index) => (
+          <View
+            key={index}
+            style={[
+              styles.row,
+              { backgroundColor: getColorForValue(parseFloat(row)) },
+            ]}
+          >
+            <Text style={styles.rowText}>{`${
+              parseFloat(row) === 0.55 ? "0.55+" : row
+            } m/s`}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+  else{
+    if(units == "knots"){
+      return (
+        <View style={styles.table}>
+          {rows.map((row, index) => (
+            <View
+              key={index}
+              style={[
+                styles.row,
+                { backgroundColor: getColorForValue(parseFloat(row)) },
+              ]}
+            >
+              <Text style={styles.rowText}>{`${
+                parseFloat(row) === 1.1 ? "1.1+" : row
+              } knots`}</Text>
+            </View>
+          ))}
+        </View>
+      );
+    }
   }
 
-  return (
-    <View style={styles.table}>
-      {rows.map((row, index) => (
-        <View
-          key={index}
-          style={[
-            styles.row,
-            { backgroundColor: getColorForValue(parseFloat(row)) },
-          ]}
-        >
-          <Text style={styles.rowText}>{`${
-            parseFloat(row) === 1.1 ? "1.1+" : row
-          } knots`}</Text>
-        </View>
-      ))}
-    </View>
-  );
 };
 
 const styles = StyleSheet.create({
