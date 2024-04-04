@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext} from "react";
+import { useState, useEffect, useContext } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { SettingsContext } from "../contexts/SettingsContext";
 
@@ -29,11 +29,11 @@ const ColorTable = ({ visible }) => {
       const newRows = [];
       if (units === "knots") {
         for (let i = 0; i <= 2.5; i += 0.25) {
-          newRows.push((i).toFixed(2));
+          newRows.push(i.toFixed(2));
         }
       } else if (units === "m/s") {
         for (let i = 0; i <= 0.55; i += 0.05) {
-          newRows.push((i).toFixed(2));
+          newRows.push(i.toFixed(2));
         }
       }
       setRows(newRows);
@@ -44,16 +44,15 @@ const ColorTable = ({ visible }) => {
 
   const getColorForValue = (value) => {
     let max = 2.5;
-    if (units == "knots"){
+    if (units == "knots") {
       max = 2.5;
-    } 
-    else if (units == "m/s"){
+    } else if (units == "m/s") {
       max = 0.55;
-    } 
+    }
     const min = 0.0;
     const range = max - min;
     const normalizedValue = (value - min) / range;
-    const hue = ((1 - normalizedValue) * 120).toString(10);
+    const hue = ((1 - normalizedValue) * 100).toString(10);
     return ["hsl(", hue, ",100%,50%)"].join("");
   };
 
@@ -61,7 +60,7 @@ const ColorTable = ({ visible }) => {
     return null;
   }
 
-  if(units == "knots"){
+  if (units == "knots") {
     return (
       <View style={styles.table}>
         {rows.map((row, index) => (
@@ -79,8 +78,7 @@ const ColorTable = ({ visible }) => {
         ))}
       </View>
     );
-  }
-  else if(units == "m/s"){
+  } else if (units == "m/s") {
     return (
       <View style={styles.table}>
         {rows.map((row, index) => (
@@ -98,9 +96,8 @@ const ColorTable = ({ visible }) => {
         ))}
       </View>
     );
-  }
-  else{
-    if(units == "knots"){
+  } else {
+    if (units == "knots") {
       return (
         <View style={styles.table}>
           {rows.map((row, index) => (
@@ -120,7 +117,6 @@ const ColorTable = ({ visible }) => {
       );
     }
   }
-
 };
 
 const styles = StyleSheet.create({
