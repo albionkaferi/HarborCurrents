@@ -11,7 +11,7 @@ import { SettingsContext } from "../contexts/SettingsContext";
 
 export default function App() {
   const [date, setDate] = useState(new Date());
-  const { units } = useContext(SettingsContext);
+  const { units, depth, model } = useContext(SettingsContext);
   const { userToken } = useContext(AuthContext);
   const webviewRef = useRef();
 
@@ -19,8 +19,10 @@ export default function App() {
     webviewRef.current.postMessage({
       token: userToken,
       time: toLocalISOString(date),
+      depth: depth,
+      model: model,
     });
-  }, [date]);
+  }, [date, depth, model]);
 
   useEffect(() => {
     webviewRef.current.postMessage({
@@ -32,6 +34,8 @@ export default function App() {
     webviewRef.current.postMessage({
       token: userToken,
       time: toLocalISOString(date),
+      depth: depth,
+      model: model,
       units: units,
     });
   }

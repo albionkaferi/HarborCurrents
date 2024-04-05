@@ -6,7 +6,7 @@ export const SettingsContext = createContext();
 export default SettingsProvider = ({ children }) => {
   const [units, setUnits] = useState("knots");
   const [depth, setDepth] = useState("1");
-  const [model, setModel] = useState("model1");
+  const [model, setModel] = useState("bergen");
 
   useEffect(() => {
     const fetchSettings = async () => {
