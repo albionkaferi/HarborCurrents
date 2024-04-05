@@ -32,7 +32,7 @@ const ColorTable = ({ visible }) => {
           newRows.push(i.toFixed(2));
         }
       } else if (units === "m/s") {
-        for (let i = 0; i <= 0.55; i += 0.05) {
+        for (let i = 0; i <= 1.3; i += 0.128) {
           newRows.push(i.toFixed(2));
         }
       }
@@ -47,7 +47,7 @@ const ColorTable = ({ visible }) => {
     if (units == "knots") {
       max = 2.5;
     } else if (units == "m/s") {
-      max = 0.55;
+      max = 1.28;
     }
     const min = 0.0;
     const range = max - min;
@@ -90,7 +90,7 @@ const ColorTable = ({ visible }) => {
             ]}
           >
             <Text style={styles.rowText}>{`${
-              parseFloat(row) === 0.55 ? "0.55+" : row
+              parseFloat(row) === 1.28 ? "1.28+" : row
             } m/s`}</Text>
           </View>
         ))}
