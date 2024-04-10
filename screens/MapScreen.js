@@ -37,7 +37,7 @@ export default function App() {
       depth: depth,
       model: model,
       units: units,
-      max_mag: 2.5
+      max_mag: 0.5
     });
   }
 
