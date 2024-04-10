@@ -41,7 +41,6 @@ export default function ChartScreen() {
     color: (opacity = 1) => `rgba(21, 98, 207, ${opacity})`,
     strokeWidth: 1,
     barPercentage: 0.5,
-    withDots: false
   };
 
   if (!deltaData || !speedData) {
@@ -53,13 +52,15 @@ export default function ChartScreen() {
     datasets: [
       {
         data: speedData,
-        color: (opacity = 1) => `rgba(10, 66, 145, ${opacity})`,
+        color: (opacity = 100) => `rgba(0, 0, 139, 100)`,
         strokeWidth: 2,
+        dotSize: 10,
+    withDots: false,
       },
     ],
     legend: ["Speed (knots) at given minute"],
   };
-
+  const showDotIndex = 200;
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
@@ -72,7 +73,7 @@ export default function ChartScreen() {
         height={220}
         chartConfig={chartConfig}
       />
-      <Text style={styles.axisText}>Minutes from original time</Text>
+      <Text style={styles.axisText}>Hours from original time</Text>
     </SafeAreaView>
   );
 }
