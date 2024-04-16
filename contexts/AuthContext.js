@@ -53,7 +53,7 @@ export default function AuthProvider({ children }) {
       signIn: async (credentials, setError) => {
         try {
           const response = await fetch(
-            "https://harbor-currents-api.onrender.com/signin",
+            "http://ec2-54-234-213-6.compute-1.amazonaws.com:8080/signin",
             {
               method: "POST",
               headers: {
