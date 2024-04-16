@@ -8,9 +8,10 @@ import { toLocalISOString } from "../lib/utils";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { SettingsContext } from "../contexts/SettingsContext";
+import { getRoundedDate } from "../lib/utils";
 
 export default function App() {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(getRoundedDate());
   const { units, depth, model } = useContext(SettingsContext);
   const { userToken } = useContext(AuthContext);
   const webviewRef = useRef();
@@ -37,7 +38,7 @@ export default function App() {
       depth: depth,
       model: model,
       units: units,
-      max_mag: 0.5
+      max_mag: 0.5,
     });
   }
 

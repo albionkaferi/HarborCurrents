@@ -1,12 +1,13 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { getRoundedDate } from "../lib/utils";
 
-const minDate = new Date();
+const minDate = getRoundedDate();
 minDate.setDate(minDate.getDate() - 7);
 minDate.setHours(23, 59, 59, 999);
 
-const maxDate = new Date();
+const maxDate = getRoundedDate();
 maxDate.setDate(maxDate.getDate() + 7);
 maxDate.setHours(0, 0, 0, 0);
 
@@ -16,70 +17,51 @@ export default function DateTimeSettings({ date, setDate }) {
   const [isMinTime, setIsMinTime] = useState(false);
   const [isMaxTime, setIsMaxTime] = useState(false);
 
-  // useEffect(() => {
-  //   const newIsMinDate = date <= minDate;
-  //   const newIsMaxDate = date >= maxDate;
-  //   setIsMinDate(newIsMinDate);
-  //   setIsMaxDate(newIsMaxDate);
-
-  //   if (newIsMinDate) {
-  //     setIsMinTime(date.getHours() === 0);
-  //   } else {
-  //     setIsMinTime(false);
-  //   }
-
-  //   if (newIsMaxDate) {
-  //     setIsMaxTime(date.getHours() === 23);
-  //   } else {
-  //     setIsMaxTime(false);
-  //   }
-  // }, [date]);
+  const updateMinMax = (newDate) => {
+    const newIsMinDate = newDate <= minDate;
+    const newIsMaxDate = newDate >= maxDate;
+    setIsMinDate(newIsMinDate);
+    setIsMaxDate(newIsMaxDate);
+    if (newIsMinDate) {
+      setIsMinTime(newDate.getHours() === 0);
+    } else {
+      setIsMinTime(false);
+    }
+    if (newIsMaxDate) {
+      setIsMaxTime(newDate.getHours() === 23);
+    } else {
+      setIsMaxTime(false);
+    }
+  };
 
   const onChange = (event, selectedDate) => {
-    const newDate = new Date(selectedDate);
-    const minutes = selectedDate.getMinutes();
-    if (minutes > 40) {
-      newDate.setMinutes(60);
-    } else if (minutes > 20) {
-      newDate.setMinutes(40);
-    } else {
-      newDate.setMinutes(20);
-    }
-    newDate.setMinutes(selectedDate.getMinutes() >= 30 ? 60 : 0);
-    setDate(newDate);
+    setDate(selectedDate);
+    updateMinMax(selectedDate);
   };
 
   const onClick = (type, operation) => {
     const newDate = new Date(date);
+    const value = operation === "increment" ? 1 : -1;
     if (type === "date") {
-      // if (
-      //   (operation === "increment" && isMaxDate) ||
-      //   (operation === "decrement" && isMinDate)
-      // )
-      //   return;
-      const value = operation === "increment" ? 1 : -1;
       newDate.setDate(newDate.getDate() + value);
     } else if (type === "time") {
-      // if (
-      //   (operation === "increment" && isMaxTime) ||
-      //   (operation === "decrement" && isMinTime)
-      // )
-      //   return;
-      const value = operation === "increment" ? 1 : -1;
       newDate.setHours(newDate.getHours() + value);
     }
     setDate(newDate);
+    updateMinMax(newDate);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.pickerContainer}>
         <Pressable
-          style={() => [
+          style={({ pressed }) => [
             { backgroundColor: isMinDate ? "#a3a3a3" : "#f87171" },
             styles.btn,
+            { opacity: pressed ? 0.5 : 1 },
           ]}
           onPress={() => onClick("date", "decrement")}
+          disabled={isMinDate}
         >
           <Text style={styles.btnText}>-1 Day</Text>
         </Pressable>
@@ -90,26 +72,30 @@ export default function DateTimeSettings({ date, setDate }) {
           mode={"date"}
           is24Hour={true}
           onChange={onChange}
-          // minimumDate={minDate}
-          // maximumDate={maxDate}
+          minimumDate={minDate}
+          maximumDate={maxDate}
         />
         <Pressable
-          style={() => [
+          style={({ pressed }) => [
             { backgroundColor: isMaxDate ? "#a3a3a3" : "#34d399" },
             styles.btn,
+            { opacity: pressed ? 0.5 : 1 },
           ]}
           onPress={() => onClick("date", "increment")}
+          disabled={isMaxDate}
         >
           <Text style={styles.btnText}>+1 Day</Text>
         </Pressable>
       </View>
       <View style={styles.pickerContainer}>
         <Pressable
-          style={() => [
+          style={({ pressed }) => [
             { backgroundColor: isMinTime ? "#a3a3a3" : "#f87171" },
             styles.btn,
+            { opacity: pressed ? 0.5 : 1 },
           ]}
           onPress={() => onClick("time", "decrement")}
+          disabled={isMinTime}
         >
           <Text style={styles.btnText}>-1 Hour</Text>
         </Pressable>
@@ -123,14 +109,16 @@ export default function DateTimeSettings({ date, setDate }) {
           onChange={onChange}
         />
         <Pressable
-          style={() => [
+          style={({ pressed }) => [
             styles.btn,
             {
               backgroundColor: isMaxTime ? "#a3a3a3" : "#34d399",
               marginLeft: 20,
+              opacity: pressed ? 0.5 : 1,
             },
           ]}
           onPress={() => onClick("time", "increment")}
+          disabled={isMaxTime}
         >
           <Text style={styles.btnText}>+1 Hour</Text>
         </Pressable>
