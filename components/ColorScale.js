@@ -23,17 +23,19 @@ export default function ColorScale() {
 const ColorTable = ({ visible }) => {
   const { units, maxScale } = useContext(SettingsContext);
   const [rows, setRows] = useState([]);
+  let maxMeters = (maxScale*0.514444);
 
   useEffect(() => {
     const generateRows = () => {
       const newRows = [];
-      let increment = maxScale/10;
       if (units === "knots") {
+        let increment = maxScale/10;
         for (let i = 0; i <= maxScale+ 0.0001; i += increment) {
           newRows.push(i.toFixed(2));
         }
       } else if (units === "m/s") {
-        for (let i = 0; i <= 1.3; i += .28) {
+        let increment = maxMeters/10;
+        for (let i = 0; i <= maxMeters+ 0.0001; i += increment) {
           newRows.push(i.toFixed(2));
         }
       }
@@ -48,7 +50,7 @@ const ColorTable = ({ visible }) => {
     if (units == "knots") {
       max = maxScale;
     } else if (units == "m/s") {
-      max = 1.28;
+      max = maxMeters;
     }
     const min = 0.0;
     const range = max - min;
@@ -90,9 +92,9 @@ const ColorTable = ({ visible }) => {
               { backgroundColor: getColorForValue(parseFloat(row)) },
             ]}
           >
-            <Text style={styles.rowText}>{`${
-              parseFloat(row) === 1.28 ? "1.28+" : row
-            } m/s`}</Text>
+            <Text style={styles.rowText}>
+            {`${row}${index === rows.length - 1 ? "+ m/s" : " m/s"}`}
+            </Text>
           </View>
         ))}
       </View>

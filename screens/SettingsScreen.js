@@ -51,7 +51,8 @@ export default function SettingsScreen() {
             value={maxScale}
             onValueChange={handleSliderChange}
           />
-          <Text>Value: {roundToDecimal(maxScale, 1)}</Text>
+          <Text>Value: {roundToDecimal(maxScale, 1)} knots</Text>
+          <Text>Value: {roundToDecimal(maxScale*0.514444, 2)} m/s</Text>
         </View>
       </View>
       
