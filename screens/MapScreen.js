@@ -12,7 +12,7 @@ import { getRoundedDate } from "../lib/utils";
 
 export default function App() {
   const [date, setDate] = useState(getRoundedDate());
-  const { units, depth, model } = useContext(SettingsContext);
+  const { units, depth, model, maxMag } = useContext(SettingsContext);
   const { userToken } = useContext(AuthContext);
   const webviewRef = useRef();
 
@@ -31,6 +31,12 @@ export default function App() {
     });
   }, [units]);
 
+  useEffect(() => {
+    webviewRef.current.postMessage({
+      maxMag: maxMag,
+    });
+  }, [maxMag]);
+
   function sendDataToWebView() {
     webviewRef.current.postMessage({
       token: userToken,
@@ -38,7 +44,7 @@ export default function App() {
       depth: depth,
       model: model,
       units: units,
-      max_mag: 0.5,
+      maxMag: maxMag,
     });
   }
 
@@ -49,7 +55,7 @@ export default function App() {
         style={styles.webview}
         source={{ uri: "https://harbor-currents-mapbox-website.vercel.app/" }}
         onLoad={async () => {
-          await new Promise((resolve) => setTimeout(resolve, 5000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
           sendDataToWebView();
         }}
       />

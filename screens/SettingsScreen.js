@@ -36,8 +36,8 @@ export default function SettingsScreen() {
         <View style={styles.setting}>
           <Text style={styles.label}>Max Magnitude for Color Scale</Text>
           <Slider
-            minimumValue={1}
-            maximumValue={5}
+            minimumValue={0}
+            maximumValue={3}
             step={0.1}
             value={maxMag}
             onValueChange={(value) => {

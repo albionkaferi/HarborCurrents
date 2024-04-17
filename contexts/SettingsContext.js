@@ -19,7 +19,8 @@ export default SettingsProvider = ({ children }) => {
           const storedValue = await AsyncStorage.getItem(keys[i]);
           if (storedValue !== null) {
             if (keys[i] == "maxMag") {
-              setters[i](parseFloat(storedValue));
+              const numberValue = Number(storedValue);
+              setters[i](numberValue);
             } else {
               setters[i](storedValue);
             }
