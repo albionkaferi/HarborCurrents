@@ -1,10 +1,21 @@
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
 import { useContext } from "react";
+import {Slider} from '@miblanchard/react-native-slider';
 import { SettingsContext } from "../contexts/SettingsContext";
 import { AuthContext } from "../contexts/AuthContext";
 
 export default function SettingsScreen() {
   const { signOut } = useContext(AuthContext);
+  const { maxScale, setMaxScale } = useContext(SettingsContext);
+
+  const handleSliderChange = (value) => {
+    setMaxScale(roundToDecimal(value, 1)); // Update maxScale when slider value changes
+  };
+
+  const roundToDecimal = (num, decimals) => {
+    const factor = Math.pow(10, decimals);
+    return Math.round(num * factor) / factor;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,7 +42,19 @@ export default function SettingsScreen() {
             <SelectorButton title="Regional" value="nyhops" type="model" />
           </View>
         </View>
+        <View style={styles.setting}>
+        <Text style={styles.label}>Set Max Value for Color Scale</Text>
+          <Slider
+            minimumValue={1}
+            maximumValue={5}
+            step={0.1}
+            value={maxScale}
+            onValueChange={handleSliderChange}
+          />
+          <Text>Value: {roundToDecimal(maxScale, 1)}</Text>
+        </View>
       </View>
+      
       <Pressable
         onPress={signOut}
         style={({ pressed }) => [
