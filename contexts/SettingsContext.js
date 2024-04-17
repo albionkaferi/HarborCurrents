@@ -5,20 +5,24 @@ export const SettingsContext = createContext();
 
 export default SettingsProvider = ({ children }) => {
   const [units, setUnits] = useState("knots");
-  const [maxScale, setMaxScale] = useState(2.5);
   const [depth, setDepth] = useState("1");
   const [model, setModel] = useState("bergen");
+  const [maxMag, setMaxMag] = useState(2.5);
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const keys = ["units", "depth", "model", "maxScale"];
-        const setters = [setUnits, setDepth, setModel, setMaxScale];
+        const keys = ["units", "depth", "model", "maxMag"];
+        const setters = [setUnits, setDepth, setModel, setMaxMag];
 
         for (let i = 0; i < keys.length; i++) {
           const storedValue = await AsyncStorage.getItem(keys[i]);
           if (storedValue !== null) {
-            setters[i](storedValue);
+            if (keys[i] == "maxMag") {
+              setters[i](parseFloat(storedValue));
+            } else {
+              setters[i](storedValue);
+            }
           }
         }
       } catch (e) {
@@ -34,7 +38,7 @@ export default SettingsProvider = ({ children }) => {
       units: setUnits,
       depth: setDepth,
       model: setModel,
-      maxScale: setMaxScale,
+      maxMag: setMaxMag,
     };
     try {
       setters[key](newValue);
@@ -50,8 +54,7 @@ export default SettingsProvider = ({ children }) => {
         units,
         model,
         depth,
-        maxScale,
-        setMaxScale,
+        maxMag,
         storeItem,
       }}
     >

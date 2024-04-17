@@ -21,21 +21,21 @@ export default function ColorScale() {
 }
 
 const ColorTable = ({ visible }) => {
-  const { units, maxScale } = useContext(SettingsContext);
+  const { units, maxMag } = useContext(SettingsContext);
   const [rows, setRows] = useState([]);
-  let maxMeters = (maxScale*0.514444);
+  let maxMeters = maxMag * 0.514444;
 
   useEffect(() => {
     const generateRows = () => {
       const newRows = [];
       if (units === "knots") {
-        let increment = maxScale/10;
-        for (let i = 0; i <= maxScale+ 0.0001; i += increment) {
+        let increment = maxMag / 10;
+        for (let i = 0; i <= maxMag + 0.0001; i += increment) {
           newRows.push(i.toFixed(2));
         }
       } else if (units === "m/s") {
-        let increment = maxMeters/10;
-        for (let i = 0; i <= maxMeters+ 0.0001; i += increment) {
+        let increment = maxMeters / 10;
+        for (let i = 0; i <= maxMeters + 0.0001; i += increment) {
           newRows.push(i.toFixed(2));
         }
       }
@@ -43,12 +43,12 @@ const ColorTable = ({ visible }) => {
     };
 
     generateRows();
-  }, [units, maxScale]);
+  }, [units, maxMag]);
 
   const getColorForValue = (value) => {
-    let max = maxScale;
+    let max = maxMag;
     if (units == "knots") {
-      max = maxScale;
+      max = maxMag;
     } else if (units == "m/s") {
       max = maxMeters;
     }
@@ -75,7 +75,7 @@ const ColorTable = ({ visible }) => {
             ]}
           >
             <Text style={styles.rowText}>{`${
-              parseFloat(row) === maxScale ? maxScale+"+" : row
+              parseFloat(row) === maxMag ? maxMag + "+" : row
             } knots`}</Text>
           </View>
         ))}
@@ -93,7 +93,7 @@ const ColorTable = ({ visible }) => {
             ]}
           >
             <Text style={styles.rowText}>
-            {`${row}${index === rows.length - 1 ? "+ m/s" : " m/s"}`}
+              {`${row}${index === rows.length - 1 ? "+ m/s" : " m/s"}`}
             </Text>
           </View>
         ))}
@@ -112,7 +112,7 @@ const ColorTable = ({ visible }) => {
               ]}
             >
               <Text style={styles.rowText}>{`${
-                parseFloat(row) === maxScale ? maxScale+"+" : row
+                parseFloat(row) === maxMag ? maxMag + "+" : row
               } knots`}</Text>
             </View>
           ))}
