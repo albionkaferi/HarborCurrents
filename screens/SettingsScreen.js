@@ -1,12 +1,12 @@
 import { SafeAreaView, StyleSheet, View, Text, Pressable } from "react-native";
-import { useContext } from "react";
+import { useContext, useState, useCallback } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
 import { SettingsContext } from "../contexts/SettingsContext";
 import { AuthContext } from "../contexts/AuthContext";
+import { debounce } from "../lib/utils";
 
 export default function SettingsScreen() {
   const { signOut } = useContext(AuthContext);
-  const { maxMag, storeItem } = useContext(SettingsContext);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -33,22 +33,8 @@ export default function SettingsScreen() {
             <SelectorButton title="Regional" value="nyhops" type="model" />
           </View>
         </View>
-        <View style={styles.setting}>
-          <Text style={styles.label}>Max Magnitude for Color Scale</Text>
-          <Slider
-            minimumValue={0}
-            maximumValue={3}
-            step={0.1}
-            value={maxMag}
-            onValueChange={(value) => {
-              // store as a string for AsyncStorage
-              storeItem("maxMag", value[0].toFixed(1));
-            }}
-          />
-          <Text>Value: {maxMag} knots</Text>
-          <Text>Value: {(maxMag * 0.514444).toFixed(2)} m/s</Text>
-        </View>
       </View>
+      <SliderSetting />
 
       <Pressable
         onPress={signOut}
@@ -80,6 +66,38 @@ const SelectorButton = ({ title, value, type }) => {
     >
       <Text style={styles.optionText}>{title}</Text>
     </Pressable>
+  );
+};
+
+const SliderSetting = () => {
+  const { maxMag, storeItem } = useContext(SettingsContext);
+  const { units } = useContext(SettingsContext);
+  const [tempMaxMag, setTempMaxMag] = useState(maxMag);
+
+  const debouncedStoreItem = useCallback(
+    debounce((newValue) => storeItem("maxMag", newValue), 500),
+    []
+  );
+
+  return (
+    <View style={styles.setting}>
+      <Text style={styles.label}>Max Magnitude for Color Scale</Text>
+      <Text style={styles.sliderValue}>
+        {units === "knots" ? tempMaxMag : (tempMaxMag * 0.514444).toFixed(2)}{" "}
+        {units}
+      </Text>
+      <Slider
+        minimumValue={0.2}
+        maximumValue={3}
+        step={0.1}
+        value={tempMaxMag}
+        onValueChange={(value) => {
+          const roundedValue = +value[0].toFixed(1);
+          setTempMaxMag(roundedValue);
+          debouncedStoreItem(roundedValue);
+        }}
+      />
+    </View>
   );
 };
 
@@ -126,6 +144,12 @@ const styles = StyleSheet.create({
   optionText: {
     textAlign: "center",
     fontWeight: "bold",
+  },
+  sliderValue: {
+    fontSize: 16,
+    marginTop: 8,
+    fontWeight: "600",
+    color: "#191919",
   },
   signOutBtn: {
     paddingHorizontal: 28,
