@@ -43,7 +43,7 @@ export default SettingsProvider = ({ children }) => {
     };
     try {
       setters[key](newValue);
-      await AsyncStorage.setItem(key, newValue);
+      await AsyncStorage.setItem(key, newValue.toString());
     } catch (e) {
       console.log(`Failed to update ${key}.`);
     }
