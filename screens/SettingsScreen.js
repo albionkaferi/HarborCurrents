@@ -29,7 +29,7 @@ export default function SettingsScreen() {
         <View style={styles.setting}>
           <Text style={styles.label}>Model</Text>
           <View style={styles.optionsContainer}>
-            <SelectorButton title="Bergen Points" value="bergen" type="model" />
+            <SelectorButton title="Bergen Point" value="bergen" type="model" />
             <SelectorButton title="Regional" value="nyhops" type="model" />
           </View>
         </View>

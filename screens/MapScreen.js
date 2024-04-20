@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { WebView } from "react-native-webview";
-import { StyleSheet, View, Button } from "react-native";
-import Constants from "expo-constants";
+import { StyleSheet, View } from "react-native";
 import ColorScale from "../components/ColorScale";
 import DateTimeSettings from "../components/DateTimeSettings";
 import { toLocalISOString } from "../lib/utils";
@@ -68,7 +67,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: Constants.statusBarHeight,
   },
   webview: {
     flex: 1,
