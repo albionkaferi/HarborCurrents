@@ -2,30 +2,24 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
-import { formatPredicted } from '../lib/webScraper.js';
+import { formatBoth } from '../lib/webScraper.js';
 
 export default function ChartScreen() {
   const screenWidth = Dimensions.get("window").width;
-  const [scraperData, setScraperData] = useState(null);
+
   const [deltaData, setDeltaData] = useState(null);
   const [speedData, setSpeedData] = useState(null);
+  const [speedData2, setSpeedData2] = useState(null);
   const [originalTimestamp, setOriginalTimestamp] = useState(null);
-
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const {data, originalTime} = await formatPredicted("https://cdn.tidesandcurrents.noaa.gov/ports/plots/n06010_cu_pred_24.html");
-        setOriginalTimestamp(originalTime);
-        let delta = []
-        let echo = []
-        for (let i = 0; i < data.length; i++) {
-          if (i % Math.floor(data.length/10) === 0) delta.push(data[i][0])
-          else delta.push("")
-          echo.push(data[i][1])
-        }
-        setDeltaData(delta);
-        setSpeedData(echo);
+        const {series, predicted, labels, originalDate} = await formatBoth();
+        setOriginalTimestamp(originalDate);
+        setSpeedData2(series.map((it)=>it[0]));
+        setSpeedData(predicted.map((it)=>it[0]));
+        setDeltaData(labels);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -40,16 +34,14 @@ export default function ChartScreen() {
     backgroundGradientTo: "#f3f3f3",
     color: (opacity = 1) => `rgba(21, 98, 207, ${opacity})`,
     strokeWidth: 1,
-    barPercentage: 0.5,
-    withDots: false
+    barPercentage: 0.5
   };
 
-  if (!deltaData || !speedData) {
+  if (!deltaData || !speedData || !speedData2) {
     return null; // You can return a loading indicator here
   }
 
   const data = {
-    labels: deltaData,
     datasets: [
       {
         data: speedData,
@@ -60,19 +52,43 @@ export default function ChartScreen() {
     legend: ["Speed (knots) at given minute"],
   };
 
+  const data2 = {
+    labels: deltaData,
+    datasets: [
+      {
+        data: speedData2,
+        color: (opacity = 1) => `rgba(10, 66, 145, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ]
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
         <Text style={styles.titleText}>Kill Van Kull, Along Channel Velocity</Text>
         <Text style={styles.dateText}>{originalTimestamp}</Text>
       </View>
+      <Text style={styles.dateText}>Predicted</Text>
       <LineChart
         data={data}
         width={screenWidth-20}
         height={220}
         chartConfig={chartConfig}
+        withDots={false}
+        withVerticalLines={false}
       />
-      <Text style={styles.axisText}>Minutes from original time</Text>
+      <Text style={styles.dateText}>Actual</Text>
+      <LineChart
+        data={data2}
+        width={screenWidth-20}
+        height={220}
+        chartConfig={chartConfig}
+        withDots={false}
+        withVerticalLines={false}
+        verticalLabelRotation={-90}
+      />
+      <Text style={styles.axisText}>Hours from original time</Text>
     </SafeAreaView>
   );
 }
