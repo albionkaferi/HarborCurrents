@@ -53,8 +53,7 @@ export default function App() {
         ref={webviewRef}
         style={styles.webview}
         source={{ uri: "https://harbor-currents-mapbox-website.vercel.app/" }}
-        onLoad={async () => {
-          await new Promise((resolve) => setTimeout(resolve, 5000));
+        onMessage={async (message) => {
           sendDataToWebView();
         }}
       />
