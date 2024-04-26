@@ -72,28 +72,30 @@ export default function ChartScreen() {
         </Text>
         <Text style={styles.dateText}>{originalTimestamp}</Text>
       </View>
-      <Text style={styles.subHeader}>Predicted</Text>
-      <LineChart
-        data={data}
-        width={screenWidth - 36}
-        height={200}
-        chartConfig={chartConfig}
-        withDots={false}
-        withVerticalLines={false}
-        style={styles.chart}
-      />
-      <Text style={styles.subHeader}>Actual</Text>
-      <LineChart
-        data={data2}
-        width={screenWidth - 36}
-        height={200}
-        chartConfig={chartConfig}
-        withDots={false}
-        withVerticalLines={false}
-        verticalLabelRotation={-90}
-        style={styles.chart}
-      />
-      <Text style={styles.axisText}>Hours from original time</Text>
+      <View style={styles.chartContainer}>
+        <Text style={styles.subHeader}>Predicted</Text>
+        <LineChart
+          data={data}
+          width={screenWidth - 36}
+          height={200}
+          chartConfig={chartConfig}
+          withDots={false}
+          withVerticalLines={false}
+          style={styles.chart}
+        />
+        <Text style={styles.subHeader}>Actual</Text>
+        <LineChart
+          data={data2}
+          width={screenWidth - 36}
+          height={200}
+          chartConfig={chartConfig}
+          withDots={false}
+          withVerticalLines={false}
+          verticalLabelRotation={-90}
+          style={styles.chart}
+        />
+        <Text style={styles.axisText}>Hours from original time</Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -101,10 +103,15 @@ export default function ChartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "red",
   },
   textContainer: {
     marginBottom: 24,
+  },
+  chartContainer: {
+    flex: 1,
+    position: "relative",
+    justifyContent: "center",
+    marginBottom: 64,
   },
   titleText: {
     fontSize: 18,
@@ -121,9 +128,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   axisText: {
+    position: "relative",
+    left: "50%",
+    transform: [{ translateX: -80 }],
     fontSize: 14,
     fontWeight: "500",
-    marginLeft: 120,
     color: "#1562CF",
   },
   header: {
@@ -142,9 +151,9 @@ const styles = StyleSheet.create({
   },
   sideText: {
     position: "absolute",
+    top: "50%",
     left: -24,
-    bottom: 290,
-    transform: [{ rotate: "-90deg" }],
+    transform: [{ rotate: "-90deg" }, { translateX: -50 }],
     color: "#1562CF",
     fontSize: 12,
     fontWeight: "500",
