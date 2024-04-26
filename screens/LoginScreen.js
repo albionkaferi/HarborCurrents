@@ -1,6 +1,14 @@
 import React, { useState, useContext } from "react";
-import { View, TextInput, Text, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  Pressable,
+  StyleSheet,
+  Image,
+} from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
+import logo from "../assets/logo.png";
 
 export default function LoginScreen() {
   const { signIn } = useContext(AuthContext);
@@ -11,6 +19,10 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Image source={logo} style={styles.logo} />
+        <Text style={styles.title}>Harbor Currents</Text>
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -71,5 +83,21 @@ const styles = StyleSheet.create({
   btnText: {
     color: "white",
     fontWeight: "bold",
+  },
+  logo: {
+    width: 64,
+    height: 64,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#346ea8",
+    marginLeft: 8,
+    marginRight: 12,
   },
 });

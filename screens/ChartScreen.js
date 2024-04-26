@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
-import { formatBoth } from '../lib/webScraper.js';
+import { formatBoth } from "../lib/webScraper.js";
 
 export default function ChartScreen() {
   const screenWidth = Dimensions.get("window").width;
@@ -15,10 +15,10 @@ export default function ChartScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const {series, predicted, labels, originalDate} = await formatBoth();
+        const { series, predicted, labels, originalDate } = await formatBoth();
         setOriginalTimestamp(originalDate);
-        setSpeedData2(series.map((it)=>it[0]));
-        setSpeedData(predicted.map((it)=>it[0]));
+        setSpeedData2(series.map((it) => it[0]));
+        setSpeedData(predicted.map((it) => it[0]));
         setDeltaData(labels);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -34,7 +34,7 @@ export default function ChartScreen() {
     backgroundGradientTo: "#f3f3f3",
     color: (opacity = 1) => `rgba(21, 98, 207, ${opacity})`,
     strokeWidth: 1,
-    barPercentage: 0.5
+    barPercentage: 0.5,
   };
 
   if (!deltaData || !speedData || !speedData2) {
@@ -49,7 +49,6 @@ export default function ChartScreen() {
         strokeWidth: 2,
       },
     ],
-    legend: ["Speed (knots) at given minute"],
   };
 
   const data2 = {
@@ -60,33 +59,39 @@ export default function ChartScreen() {
         color: (opacity = 1) => `rgba(10, 66, 145, ${opacity})`,
         strokeWidth: 2,
       },
-    ]
+    ],
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.sideText}>Speed (knots)</Text>
+      <Text style={styles.header}>Time Series Charts</Text>
       <View style={styles.textContainer}>
-        <Text style={styles.titleText}>Kill Van Kull, Along Channel Velocity</Text>
+        <Text style={styles.titleText}>
+          Kill Van Kull, Along Channel Velocity
+        </Text>
         <Text style={styles.dateText}>{originalTimestamp}</Text>
       </View>
-      <Text style={styles.dateText}>Predicted</Text>
+      <Text style={styles.subHeader}>Predicted</Text>
       <LineChart
         data={data}
-        width={screenWidth-20}
-        height={220}
+        width={screenWidth - 36}
+        height={200}
         chartConfig={chartConfig}
         withDots={false}
         withVerticalLines={false}
+        style={styles.chart}
       />
-      <Text style={styles.dateText}>Actual</Text>
+      <Text style={styles.subHeader}>Actual</Text>
       <LineChart
         data={data2}
-        width={screenWidth-20}
-        height={220}
+        width={screenWidth - 36}
+        height={200}
         chartConfig={chartConfig}
         withDots={false}
         withVerticalLines={false}
         verticalLabelRotation={-90}
+        style={styles.chart}
       />
       <Text style={styles.axisText}>Hours from original time</Text>
     </SafeAreaView>
@@ -96,25 +101,53 @@ export default function ChartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // backgroundColor: "red",
   },
   textContainer: {
-    marginBottom: 12,
+    marginBottom: 24,
   },
   titleText: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "500",
-    marginLeft: 20,
+    marginLeft: 32,
+    marginBottom: 4,
   },
   dateText: {
     fontSize: 18,
     fontWeight: "500",
-    marginLeft: 20,
+    marginLeft: 32,
+  },
+  chart: {
+    marginLeft: 10,
   },
   axisText: {
-    fontSize: 16,
-    fontWeight: "400",
-    marginLeft: 130
-  }
+    fontSize: 14,
+    fontWeight: "500",
+    marginLeft: 120,
+    color: "#1562CF",
+  },
+  header: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#191919",
+    marginTop: 36,
+    marginLeft: 32,
+    marginBottom: 12,
+  },
+  subHeader: {
+    fontSize: 18,
+    fontWeight: "500",
+    marginLeft: 76,
+    color: "#1562CF",
+  },
+  sideText: {
+    position: "absolute",
+    left: -24,
+    bottom: 290,
+    transform: [{ rotate: "-90deg" }],
+    color: "#1562CF",
+    fontSize: 12,
+    fontWeight: "500",
+    zIndex: 1,
+  },
 });
-//y

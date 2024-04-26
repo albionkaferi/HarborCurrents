@@ -125,7 +125,7 @@ const ColorTable = ({ visible }) => {
 const styles = StyleSheet.create({
   table: {
     position: "absolute",
-    top: 50,
+    top: 60,
     right: 10,
     zIndex: 2,
     padding: 10,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   button: {
     position: "absolute",
-    top: 60,
+    top: 70,
     left: 20,
     zIndex: 2,
     backgroundColor: "#007bff",
