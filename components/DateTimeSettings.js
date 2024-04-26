@@ -4,11 +4,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { getRoundedDate } from "../lib/utils";
 
 const minDate = getRoundedDate();
-minDate.setDate(minDate.getDate() - 7);
+minDate.setDate(minDate.getDate() - 90);
 minDate.setHours(23, 59, 59, 999);
 
 const maxDate = getRoundedDate();
-maxDate.setDate(maxDate.getDate() + 7);
+maxDate.setDate(maxDate.getDate() + 5);
 maxDate.setHours(0, 0, 0, 0);
 
 export default function DateTimeSettings({ date, setDate }) {
