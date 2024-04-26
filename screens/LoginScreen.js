@@ -29,6 +29,7 @@ export default function LoginScreen() {
           placeholder="Username"
           value={username}
           onChangeText={setUsername}
+          autoComplete="off"
         />
         <TextInput
           style={styles.input}
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: "#346ea8",
-    marginLeft: 8,
-    marginRight: 12,
+    marginLeft: 4,
+    marginRight: 16,
   },
 });
