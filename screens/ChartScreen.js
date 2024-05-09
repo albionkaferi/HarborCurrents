@@ -37,10 +37,6 @@ export default function ChartScreen() {
     barPercentage: 0.5,
   };
 
-  if (!deltaData || !speedData || !speedData2) {
-    return null; // You can return a loading indicator here
-  }
-
   const data = {
     datasets: [
       {
@@ -64,38 +60,42 @@ export default function ChartScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.sideText}>Speed (knots)</Text>
       <Text style={styles.header}>Time Series Charts</Text>
-      <View style={styles.textContainer}>
-        <Text style={styles.titleText}>
-          Kill Van Kull, Along Channel Velocity
-        </Text>
-        <Text style={styles.dateText}>{originalTimestamp}</Text>
-      </View>
-      <View style={styles.chartContainer}>
-        <Text style={styles.subHeader}>Predicted</Text>
-        <LineChart
-          data={data}
-          width={screenWidth - 36}
-          height={200}
-          chartConfig={chartConfig}
-          withDots={false}
-          withVerticalLines={false}
-          style={styles.chart}
-        />
-        <Text style={styles.subHeader}>Actual</Text>
-        <LineChart
-          data={data2}
-          width={screenWidth - 36}
-          height={200}
-          chartConfig={chartConfig}
-          withDots={false}
-          withVerticalLines={false}
-          verticalLabelRotation={-90}
-          style={styles.chart}
-        />
-        <Text style={styles.axisText}>Hours from original time</Text>
-      </View>
+      {deltaData && speedData && speedData2 && (
+        <>
+          <View style={styles.textContainer}>
+            <Text style={styles.titleText}>
+              Kill Van Kull, Along Channel Velocity
+            </Text>
+            <Text style={styles.dateText}>{originalTimestamp}</Text>
+          </View>
+          <Text style={styles.sideText}>Speed (knots)</Text>
+          <View style={styles.chartContainer}>
+            <Text style={styles.subHeader}>Predicted</Text>
+            <LineChart
+              data={data}
+              width={screenWidth - 36}
+              height={200}
+              chartConfig={chartConfig}
+              withDots={false}
+              withVerticalLines={false}
+              style={styles.chart}
+            />
+            <Text style={styles.subHeader}>Actual</Text>
+            <LineChart
+              data={data2}
+              width={screenWidth - 36}
+              height={200}
+              chartConfig={chartConfig}
+              withDots={false}
+              withVerticalLines={false}
+              verticalLabelRotation={-90}
+              style={styles.chart}
+            />
+            <Text style={styles.axisText}>Hours from original time</Text>
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 }
