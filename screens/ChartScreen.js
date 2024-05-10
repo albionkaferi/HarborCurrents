@@ -15,9 +15,9 @@ export default function ChartScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { series, predicted, labels, originalDate } = await formatBoth();
+        const { actual, predicted, labels, originalDate } = await formatBoth();
         setOriginalTimestamp(originalDate);
-        setSpeedData2(series.map((it) => it[0]));
+        setSpeedData2(actual.map((it) => it[0]));
         setSpeedData(predicted.map((it) => it[0]));
         setDeltaData(labels);
       } catch (error) {
