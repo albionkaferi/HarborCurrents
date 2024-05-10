@@ -1,30 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { formatBoth } from "../lib/webScraper.js";
+import { expandData } from "../lib/utils.js";
+
+const screenWidth = Dimensions.get("window").width;
 
 export default function ChartScreen() {
-  const screenWidth = Dimensions.get("window").width;
-
-  const [deltaData, setDeltaData] = useState(null);
-  const [speedData, setSpeedData] = useState(null);
-  const [speedData2, setSpeedData2] = useState(null);
-  const [originalTimestamp, setOriginalTimestamp] = useState(null);
+  const [deltaData, setDeltaData] = useState();
+  const [actualData, setActualData] = useState();
+  const [predictedData, setPredictedData] = useState();
+  const [originalTimestamp, setOriginalTimestamp] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { actual, predicted, labels, originalDate } = await formatBoth();
         setOriginalTimestamp(originalDate);
-        setSpeedData2(actual.map((it) => it[0]));
-        setSpeedData(predicted.map((it) => it[0]));
+        setActualData(actual.map((it) => it[0]));
+        const expandedSpeedData = expandData(
+          predicted.map((it) => it[0]),
+          actual.length
+        );
+        setPredictedData(expandedSpeedData);
         setDeltaData(labels);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -32,67 +44,56 @@ export default function ChartScreen() {
     backgroundColor: "#f3f3f3",
     backgroundGradientFrom: "#f3f3f3",
     backgroundGradientTo: "#f3f3f3",
-    color: (opacity = 1) => `rgba(21, 98, 207, ${opacity})`,
-    strokeWidth: 1,
-    barPercentage: 0.5,
+    color: (opacity = 1) => `rgba(38, 38, 38, ${opacity})`,
   };
 
   const data = {
-    datasets: [
-      {
-        data: speedData,
-        color: (opacity = 1) => `rgba(10, 66, 145, ${opacity})`,
-        strokeWidth: 2,
-      },
-    ],
-  };
-
-  const data2 = {
     labels: deltaData,
     datasets: [
       {
-        data: speedData2,
-        color: (opacity = 1) => `rgba(10, 66, 145, ${opacity})`,
+        data: actualData,
+        color: (opacity = 1) => `rgba(0, 0, 204, ${opacity})`,
+        strokeWidth: 2,
+      },
+      {
+        data: predictedData,
+        color: (opacity = 1) => `rgba(0, 102, 204, ${opacity})`,
         strokeWidth: 2,
       },
     ],
+    legend: ["Actual", "Predicted"],
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Time Series Charts</Text>
-      {deltaData && speedData && speedData2 && (
+      <View style={styles.textContainer}>
+        <Text style={styles.subHeader}>
+          This chart compares the predicted and actual speeds (in knots) of
+          currents along the
+          <Text style={styles.channel}> Kill Van Kull channel.</Text>
+        </Text>
+      </View>
+      {isLoading ? (
+        <View style={styles.chartContainer}>
+          <ActivityIndicator />
+        </View>
+      ) : (
         <>
-          <View style={styles.textContainer}>
-            <Text style={styles.titleText}>
-              Kill Van Kull, Along Channel Velocity
-            </Text>
-            <Text style={styles.dateText}>{originalTimestamp}</Text>
-          </View>
-          <Text style={styles.sideText}>Speed (knots)</Text>
           <View style={styles.chartContainer}>
-            <Text style={styles.subHeader}>Predicted</Text>
             <LineChart
               data={data}
-              width={screenWidth - 36}
-              height={200}
-              chartConfig={chartConfig}
-              withDots={false}
-              withVerticalLines={false}
-              style={styles.chart}
-            />
-            <Text style={styles.subHeader}>Actual</Text>
-            <LineChart
-              data={data2}
-              width={screenWidth - 36}
+              width={screenWidth - 28}
               height={200}
               chartConfig={chartConfig}
               withDots={false}
               withVerticalLines={false}
               verticalLabelRotation={-90}
+              withShadow={false}
               style={styles.chart}
             />
-            <Text style={styles.axisText}>Hours from original time</Text>
+            <Text style={styles.sideText}>Speed (knots)</Text>
+            <Text style={styles.axisText}>Hours from {originalTimestamp}</Text>
           </View>
         </>
       )}
@@ -113,19 +114,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 64,
   },
-  titleText: {
-    fontSize: 18,
-    fontWeight: "500",
-    marginLeft: 32,
-    marginBottom: 4,
-  },
-  dateText: {
-    fontSize: 18,
-    fontWeight: "500",
-    marginLeft: 32,
-  },
   chart: {
-    marginLeft: 10,
+    marginLeft: 12,
   },
   axisText: {
     position: "relative",
@@ -133,7 +123,8 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -80 }],
     fontSize: 14,
     fontWeight: "500",
-    color: "#1562CF",
+    color: "#262626",
+    marginTop: 8,
   },
   header: {
     fontSize: 32,
@@ -144,19 +135,24 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   subHeader: {
-    fontSize: 18,
+    marginTop: 16,
+    marginLeft: 32,
+    marginRight: 32,
+    fontSize: 16,
     fontWeight: "500",
-    marginLeft: 76,
-    color: "#1562CF",
+    color: "#191919",
   },
   sideText: {
     position: "absolute",
     top: "50%",
     left: -24,
-    transform: [{ rotate: "-90deg" }, { translateX: -50 }],
-    color: "#1562CF",
+    transform: [{ rotate: "-90deg" }, { translateX: 20 }],
+    color: "#262626",
     fontSize: 12,
     fontWeight: "500",
     zIndex: 1,
+  },
+  channel: {
+    fontWeight: "bold",
   },
 });
