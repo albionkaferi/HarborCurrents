@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   SafeAreaView,
   View,
@@ -9,11 +9,12 @@ import {
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { formatBoth } from "../lib/webScraper.js";
-import { expandData } from "../lib/utils.js";
+import { AuthContext } from "../contexts/AuthContext.js";
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function ChartScreen() {
+  const { userToken } = useContext(AuthContext);
   const [deltaData, setDeltaData] = useState();
   const [actualData, setActualData] = useState();
   const [predictedData, setPredictedData] = useState();
@@ -23,14 +24,12 @@ export default function ChartScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { actual, predicted, labels, originalDate } = await formatBoth();
-        setOriginalTimestamp(originalDate);
-        setActualData(actual.map((it) => it[0]));
-        const expandedSpeedData = expandData(
-          predicted.map((it) => it[0]),
-          actual.length
+        const { actual, predicted, labels, originalDate } = await formatBoth(
+          userToken
         );
-        setPredictedData(expandedSpeedData);
+        setOriginalTimestamp(originalDate);
+        setActualData(actual);
+        setPredictedData(predicted);
         setDeltaData(labels);
         setIsLoading(false);
       } catch (error) {
@@ -52,12 +51,12 @@ export default function ChartScreen() {
     datasets: [
       {
         data: actualData,
-        color: (opacity = 1) => `rgba(0, 0, 204, ${opacity})`,
+        color: (opacity = 1) => `rgba(30, 64, 175, ${opacity})`,
         strokeWidth: 2,
       },
       {
         data: predictedData,
-        color: (opacity = 1) => `rgba(0, 102, 204, ${opacity})`,
+        color: (opacity = 1) => `rgba(153, 27, 27, ${opacity})`,
         strokeWidth: 2,
       },
     ],
@@ -90,6 +89,7 @@ export default function ChartScreen() {
               withVerticalLines={false}
               verticalLabelRotation={-90}
               withShadow={false}
+              bezier
               style={styles.chart}
             />
             <Text style={styles.sideText}>Speed (knots)</Text>
