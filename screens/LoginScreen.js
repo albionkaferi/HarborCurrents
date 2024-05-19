@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import {
   View,
   TextInput,
@@ -39,16 +39,17 @@ export default function LoginScreen() {
           secureTextEntry
         />
       </View>
+      <Text style={error && styles.error}>{error}</Text>
       <Pressable
         style={({ pressed }) => [
           { backgroundColor: pressed ? "#7dd3fc" : "#0ea5e9" },
           styles.btn,
+          { marginBottom: 40 },
         ]}
         onPress={() => signIn({ username, password }, setError)}
       >
         <Text style={styles.btnText}>Sign in</Text>
       </Pressable>
-      <Text style={styles.error}>{error}</Text>
     </View>
   );
 }
@@ -61,7 +62,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "80%",
-    marginBottom: 20,
   },
   input: {
     marginVertical: 6,
@@ -73,6 +73,8 @@ const styles = StyleSheet.create({
   },
   error: {
     color: "red",
+    marginTop: 8,
+    marginBottom: 12,
   },
   btn: {
     width: "80%",

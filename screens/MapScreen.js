@@ -1,39 +1,44 @@
-import { useState, useEffect, useRef } from "react";
-import { WebView } from "react-native-webview";
+import { useState, useEffect, useRef, useContext } from "react";
 import { StyleSheet, View } from "react-native";
+import { WebView } from "react-native-webview";
 import ColorScale from "../components/ColorScale";
 import DateTimeSettings from "../components/DateTimeSettings";
-import { toLocalISOString } from "../lib/utils";
-import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { SettingsContext } from "../contexts/SettingsContext";
-import { getRoundedDate } from "../lib/utils";
+import { toLocalISOString, getRoundedDate } from "../lib/utils";
 
 export default function App() {
   const [date, setDate] = useState(getRoundedDate());
   const { units, depth, model, maxMag } = useContext(SettingsContext);
   const { userToken } = useContext(AuthContext);
   const webviewRef = useRef();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    webviewRef.current.postMessage({
-      token: userToken,
-      time: toLocalISOString(date),
-      depth: depth,
-      model: model,
-    });
+    if (isReady) {
+      webviewRef.current.postMessage({
+        token: userToken,
+        time: toLocalISOString(date),
+        depth: depth,
+        model: model,
+      });
+    }
   }, [date, depth, model]);
 
   useEffect(() => {
-    webviewRef.current.postMessage({
-      units: units,
-    });
+    if (isReady) {
+      webviewRef.current.postMessage({
+        units: units,
+      });
+    }
   }, [units]);
 
   useEffect(() => {
-    webviewRef.current.postMessage({
-      maxMag: maxMag,
-    });
+    if (isReady) {
+      webviewRef.current.postMessage({
+        maxMag: maxMag,
+      });
+    }
   }, [maxMag]);
 
   function sendDataToWebView() {
@@ -53,8 +58,9 @@ export default function App() {
         ref={webviewRef}
         style={styles.webview}
         source={{ uri: "https://harbor-currents-mapbox-website.vercel.app/" }}
-        onMessage={async (message) => {
+        onMessage={async (event) => {
           sendDataToWebView();
+          setIsReady(true);
         }}
       />
       <ColorScale />
