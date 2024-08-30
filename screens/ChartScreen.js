@@ -5,11 +5,14 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  Button,
+  Pressable,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { formatBoth } from "../lib/webScraper.js";
 import { AuthContext } from "../contexts/AuthContext.js";
+import { Alert } from 'react-native';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -20,22 +23,24 @@ export default function ChartScreen() {
   const [predictedData, setPredictedData] = useState();
   const [originalTimestamp, setOriginalTimestamp] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const { actual, predicted, labels, originalDate } = await formatBoth(
+        userToken
+      );
+      setOriginalTimestamp(originalDate);
+      setActualData(actual);
+      setPredictedData(predicted);
+      setDeltaData(labels);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { actual, predicted, labels, originalDate } = await formatBoth(
-          userToken
-        );
-        setOriginalTimestamp(originalDate);
-        setActualData(actual);
-        setPredictedData(predicted);
-        setDeltaData(labels);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
   }, []);
 
@@ -75,7 +80,10 @@ export default function ChartScreen() {
       </View>
       {isLoading ? (
         <View style={styles.chartContainer}>
-          <ActivityIndicator />
+          {error ? <View>
+            <Text style={{ textAlign: "center", color: "red", fontWeight: "bold", fontSize: "20" }}>{error}</Text>
+            <Pressable style={styles.tryAgainButton} onPress={()=> { setError(""); fetchData(); }}><Text style={styles.tryAgainLabel}>Try Again</Text></Pressable>
+          </View> : <ActivityIndicator/>}
         </View>
       ) : (
         <>
@@ -155,4 +163,20 @@ const styles = StyleSheet.create({
   channel: {
     fontWeight: "bold",
   },
+  tryAgainButton: {
+    width: 150,
+    backgroundColor: "white",
+    marginHorizontal: "auto",
+    marginVertical: 10,
+    padding: 7,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'rgba(158, 150, 150, .5)'
+  },
+  tryAgainLabel: {
+    textAlign: "center",
+    fontSize: "18",
+    fontWeight: "semibold",
+    color: "black"
+  }
 });
