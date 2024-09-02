@@ -5,14 +5,12 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  Button,
   Pressable,
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { formatBoth } from "../lib/webScraper.js";
 import { AuthContext } from "../contexts/AuthContext.js";
-import { Alert } from 'react-native';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -80,10 +78,31 @@ export default function ChartScreen() {
       </View>
       {isLoading ? (
         <View style={styles.chartContainer}>
-          {error ? <View>
-            <Text style={{ textAlign: "center", color: "red", fontWeight: "bold", fontSize: "20" }}>{error}</Text>
-            <Pressable style={styles.tryAgainButton} onPress={()=> { setError(""); fetchData(); }}><Text style={styles.tryAgainLabel}>Try Again</Text></Pressable>
-          </View> : <ActivityIndicator/>}
+          {error ? (
+            <View>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "red",
+                  fontWeight: "bold",
+                  fontSize: "20",
+                }}
+              >
+                {error}
+              </Text>
+              <Pressable
+                style={styles.tryAgainButton}
+                onPress={() => {
+                  setError("");
+                  fetchData();
+                }}
+              >
+                <Text style={styles.tryAgainLabel}>Try Again</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <ActivityIndicator />
+          )}
         </View>
       ) : (
         <>
@@ -164,19 +183,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   tryAgainButton: {
-    width: 150,
+    width: 120,
     backgroundColor: "white",
     marginHorizontal: "auto",
-    marginVertical: 10,
+    marginTop: 24,
     padding: 7,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: 'rgba(158, 150, 150, .5)'
+    borderColor: "rgba(158, 150, 150, .5)",
   },
   tryAgainLabel: {
     textAlign: "center",
     fontSize: "18",
     fontWeight: "semibold",
-    color: "black"
-  }
+    color: "black",
+  },
 });

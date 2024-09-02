@@ -57,14 +57,21 @@ const SelectorButton = ({ title, value, type }) => {
   const isSelected = value === selectedValue;
   const selectedButtonStyle = isSelected
     ? { borderWidth: 2, borderColor: "#007bff" }
-    : { borderWidth: 2, borderColor: "borderColor: 'rgba(158, 150, 150, .5)'" };
+    : {
+        borderWidth: 2,
+        borderColor: "rgba(158, 150, 150, .5)",
+      };
+
+  const textStyle = isSelected
+    ? styles.optionText
+    : [styles.optionText, { color: "#3f3f46" }];
 
   return (
     <Pressable
       style={[styles.option, selectedButtonStyle]}
       onPress={() => storeItem(type, value)}
     >
-      <Text style={styles.optionText}>{title}</Text>
+      <Text style={textStyle}>{title}</Text>
     </Pressable>
   );
 };
