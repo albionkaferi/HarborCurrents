@@ -34,7 +34,7 @@ export default function ChartScreen() {
       setDeltaData(labels);
       setIsLoading(false);
     } catch (error) {
-      setError(error);
+      setError(`${error}`);
     }
   };
 
