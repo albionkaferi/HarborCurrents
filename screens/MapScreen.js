@@ -63,8 +63,13 @@ export default function App() {
           setIsReady(true);
         }}
       />
-      <TouchableOpacity style={styles.button} title="Reload Me!" onPress={() => { webviewRef && webviewRef.current.reload(); }} >
-        <Text style={styles.buttonText}>Reload</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          webviewRef && webviewRef.current.reload();
+        }}
+      >
+        <Text style={styles.buttonText}>Reload Map</Text>
       </TouchableOpacity>
       <ColorScale />
       <DateTimeSettings date={date} setDate={setDate} />
@@ -76,20 +81,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    height: "100%"
+    height: "100%",
   },
   webview: {
     flex: 1,
     width: "100%",
-    height: "100%"
+    height: "100%",
   },
   button: {
     position: "absolute",
     top: 70,
-    right: 20,
+    left: 20,
     zIndex: 2,
     backgroundColor: "#007bff",
-    width: 75,
+    width: 112,
     height: 36,
     justifyContent: "center",
     alignItems: "center",
