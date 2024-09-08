@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import ColorScale from "../components/ColorScale";
 import DateTimeSettings from "../components/DateTimeSettings";
@@ -63,6 +63,9 @@ export default function App() {
           setIsReady(true);
         }}
       />
+      <TouchableOpacity style={styles.button} title="Reload Me!" onPress={() => { webviewRef && webviewRef.current.reload(); }} >
+        <Text style={styles.buttonText}>Reload</Text>
+      </TouchableOpacity>
       <ColorScale />
       <DateTimeSettings date={date} setDate={setDate} />
     </View>
@@ -72,8 +75,28 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
+    height: "100%"
   },
   webview: {
     flex: 1,
+    width: "100%",
+    height: "100%"
+  },
+  button: {
+    position: "absolute",
+    top: 70,
+    right: 20,
+    zIndex: 2,
+    backgroundColor: "#007bff",
+    width: 75,
+    height: 36,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
