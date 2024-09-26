@@ -12,7 +12,6 @@ import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { formatBoth } from "../lib/webScraper.js";
 import { AuthContext } from "../contexts/AuthContext.js";
-import { useIsFocused } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -24,7 +23,6 @@ export default function ChartScreen() {
   const [originalTimestamp, setOriginalTimestamp] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const isFocused = useIsFocused();
 
   const fetchData = async () => {
     try {
@@ -43,7 +41,7 @@ export default function ChartScreen() {
 
   useEffect(() => {
     fetchData();
-  }, [isFocused]);
+  }, []);
 
   const chartConfig = {
     backgroundColor: "#f3f3f3",

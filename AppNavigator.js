@@ -35,6 +35,7 @@ export default function AppNavigator() {
             component={ChartScreen}
             options={{
               tabBarLabel: "Chart",
+              unmountOnBlur: true,
               tabBarIcon: ({ focused, color, size }) => (
                 <Ionicons
                   name={focused ? "bar-chart" : "bar-chart-outline"}
