@@ -12,7 +12,7 @@ import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { formatBoth } from "../lib/webScraper.js";
 import { AuthContext } from "../contexts/AuthContext.js";
-import { Alert } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -24,6 +24,7 @@ export default function ChartScreen() {
   const [originalTimestamp, setOriginalTimestamp] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const isFocused = useIsFocused();
 
   const fetchData = async () => {
     try {
@@ -42,7 +43,7 @@ export default function ChartScreen() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   const chartConfig = {
     backgroundColor: "#f3f3f3",
@@ -74,8 +75,8 @@ export default function ChartScreen() {
       <View style={styles.textContainer}>
         <Text style={styles.subHeader}>
           This chart compares the predicted and actual speeds (in knots) of
-          currents along the
-          <Text style={styles.channel}> Kill Van Kull channel.</Text>
+          near-surface currents along the
+          <Text style={styles.channel}> Kill Van Kull channel (buoy LB14).</Text>
         </Text>
       </View>
       {isLoading ? (
