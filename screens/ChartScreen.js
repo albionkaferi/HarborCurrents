@@ -14,6 +14,21 @@ import { AuthContext } from "../contexts/AuthContext.js";
 
 const screenWidth = Dimensions.get("window").width;
 
+// cheats the chart app by returning dummy data at the max amplitude positive or negative
+// rendered invisibly to ensure the zero line is rendered
+function getDummyData(predictedValues, actualValues) {
+  if (!predictedValues || !actualValues || !predictedValues.length || !actualValues.length) {
+    return [];
+  }
+  const maxAmplitude = Math.max(
+    Math.abs(Math.min(...predictedValues)),
+    Math.max(...predictedValues),
+    Math.abs(Math.min(...actualValues)),
+    Math.max(...actualValues)
+  );
+  return [-maxAmplitude, maxAmplitude]
+}
+
 export default function ChartScreen() {
   const { userToken } = useContext(AuthContext);
   const [deltaData, setDeltaData] = useState();
@@ -62,6 +77,11 @@ export default function ChartScreen() {
         color: (opacity = 1) => `rgba(153, 27, 27, ${opacity})`,
         strokeWidth: 2,
       },
+      {
+        data: getDummyData(predictedData, actualData),
+        color: () => `rgba(153, 27, 27, 0)`,
+        strokeWidth: 1,
+      },
     ],
     legend: ["Actual", "Predicted"],
   };
@@ -72,8 +92,8 @@ export default function ChartScreen() {
       <View style={styles.textContainer}>
         <Text style={styles.subHeader}>
           This chart compares the predicted and actual speeds (in knots) of
-          currents along the
-          <Text style={styles.channel}> Kill Van Kull channel.</Text>
+          near-surface currents along the
+          <Text style={styles.channel}> Kill Van Kull channel (buoy LB14).</Text>
         </Text>
       </View>
       {isLoading ? (
