@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "HarborCurrents",
-    "slug": "HarborCurrents",
-    "version": "1.0.0",
+    "name": "harborcurrents",
+    "slug": "harborcurrents",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,12 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.harborcurrents.HarborCurrents"
+      "bundleIdentifier": "harborcurrents"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,8 +26,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "0c7f8036-488f-416c-bb7d-95bc03eaebab"
+        "projectId": "116406d1-2742-4170-8a5b-4c4bc067bf97"
       }
-    }
+    },
+    "plugins": ["expo-secure-store"]
   }
 }
