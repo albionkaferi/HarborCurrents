@@ -23,14 +23,15 @@ export default function ColorScale() {
 const ColorTable = ({ visible }) => {
   const { units, maxMag } = useContext(SettingsContext);
   const [rows, setRows] = useState([]);
-  let maxMeters = maxMag * 0.514444;
+  let maxMeters = maxMag;
+  let maxKnots = maxMag / 0.514444;
 
   useEffect(() => {
     const generateRows = () => {
       const newRows = [];
       if (units === "knots") {
-        let increment = maxMag / 10;
-        for (let i = 0; i <= maxMag + 0.0001; i += increment) {
+        let increment = maxKnots / 10;
+        for (let i = 0; i <= maxKnots + 0.0001; i += increment) {
           newRows.push(i.toFixed(2));
         }
       } else if (units === "m/s") {
@@ -48,7 +49,7 @@ const ColorTable = ({ visible }) => {
   const getColorForValue = (value) => {
     let max = maxMag;
     if (units == "knots") {
-      max = maxMag;
+      max = maxKnots;
     } else if (units == "m/s") {
       max = maxMeters;
     }
@@ -56,70 +57,30 @@ const ColorTable = ({ visible }) => {
     const range = max - min;
     const normalizedValue = (value - min) / range;
     const hue = ((1 - normalizedValue) * 100).toString(10);
-    return ["hsl(", hue, ",100%,50%)"].join("");
+    return `hsl(${hue}, 100%, 50%)`;
   };
 
   if (!visible) {
     return null;
   }
 
-  if (units == "knots") {
-    return (
-      <View style={styles.table}>
-        {rows.map((row, index) => (
-          <View
-            key={index}
-            style={[
-              styles.row,
-              { backgroundColor: getColorForValue(parseFloat(row)) },
-            ]}
-          >
-            <Text style={styles.rowText}>{`${
-              parseFloat(row) === maxMag ? maxMag + "+" : row
-            } knots`}</Text>
-          </View>
-        ))}
-      </View>
-    );
-  } else if (units == "m/s") {
-    return (
-      <View style={styles.table}>
-        {rows.map((row, index) => (
-          <View
-            key={index}
-            style={[
-              styles.row,
-              { backgroundColor: getColorForValue(parseFloat(row)) },
-            ]}
-          >
-            <Text style={styles.rowText}>
-              {`${row}${index === rows.length - 1 ? "+ m/s" : " m/s"}`}
-            </Text>
-          </View>
-        ))}
-      </View>
-    );
-  } else {
-    if (units == "knots") {
-      return (
-        <View style={styles.table}>
-          {rows.map((row, index) => (
-            <View
-              key={index}
-              style={[
-                styles.row,
-                { backgroundColor: getColorForValue(parseFloat(row)) },
-              ]}
-            >
-              <Text style={styles.rowText}>{`${
-                parseFloat(row) === maxMag ? maxMag + "+" : row
-              } knots`}</Text>
-            </View>
-          ))}
+  return (
+    <View style={styles.table}>
+      {rows.map((row, index) => (
+        <View
+          key={index}
+          style={[
+            styles.row,
+            { backgroundColor: getColorForValue(parseFloat(row)) },
+          ]}
+        >
+          <Text style={styles.rowText}>
+            {`${row}${index >= rows.length - 1 ? "+" : ""} ${units}`}
+          </Text>
         </View>
-      );
-    }
-  }
+      ))}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -129,7 +90,7 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 2,
     padding: 10,
-    width: 105,
+    width: 110,
     maxHeight: "50%",
   },
   row: {

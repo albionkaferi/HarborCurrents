@@ -90,13 +90,13 @@ const SliderSetting = () => {
     <View style={styles.setting}>
       <Text style={styles.label}>Max Magnitude for Color Scale</Text>
       <Text style={styles.sliderValue}>
-        {units === "knots" ? tempMaxMag : (tempMaxMag * 0.514444).toFixed(2)}{" "}
+        {units === "knots" ? (tempMaxMag / 0.514444).toFixed(2) : tempMaxMag}{" "}
         {units}
       </Text>
       <Slider
-        minimumValue={0.2}
-        maximumValue={3}
-        step={0.1}
+        minimumValue={0.1}
+        maximumValue={1.5}
+        step={0.05}
         value={tempMaxMag}
         onValueChange={(value) => {
           const roundedValue = +value[0].toFixed(1);
